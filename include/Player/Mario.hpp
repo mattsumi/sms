@@ -1302,6 +1302,9 @@ public:
 	// Fabricated
 	BOOL isSinking() const { return mSinkTimer > 0.0f ? TRUE : FALSE; }
 
+	// Fabricated
+	BOOL isYoshiHatched() const { return mYoshi->isHatched(); }
+
 	const JGeometry::TVec3<f32>& getPrevPosition() const { return unk29C; }
 
 public:

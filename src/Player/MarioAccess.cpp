@@ -130,6 +130,13 @@ bool SMS_IsMarioTouchGround4cm()
 		return false;
 }
 
+// TODO: nonmatching: the target reloads mHolder after the null check
+// (lwz r0, 0x68 for the compare, then lwz r3, 0x68 for the deref).
+// MWCC merges the two reads for every natural spelling tried at -opt
+// level >= 2, and level <= 1 unfuses the !=0 tail (li+subf instead of
+// neg), so no single configuration reproduces both. TMario::calcAnim in
+// MarioDraw.cpp has the same unexplained reload at its two
+// setMotionBlendRatio guards.
 bool SMS_IsMarioOnWire()
 {
 	bool ret;
