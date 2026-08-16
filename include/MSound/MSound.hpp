@@ -112,13 +112,22 @@ public:
 			                                             param_3, param_4);
 	}
 
-	// Fabricated, very likely due to real startSoundSystemSE
-	void startSoundActor(u32 param_1, const Vec* param_2, u32 param_3,
-	                     JAISound** param_4, u32 param_5, u8 param_6)
+	// Fabricated, very likely due to real startSoundSystemSE.
+	// Returning the handle through a named local (JAIBasic house style,
+	// cf. startSoundActorReturnHandle) is required for callers' stack
+	// frames to match, e.g. TDebuTelesa::receiveMessage.
+	// TODO: MapEventSink callers moved from exact to frame-only
+	// mismatches with this shape (TMapEventSinkBianco::control/watch,
+	// startControl wants 4 more bytes); whoever matches that TU should
+	// re-arbitrate this inline against all its callers.
+	JAISound* startSoundActor(u32 param_1, const Vec* param_2, u32 param_3,
+	                          JAISound** param_4, u32 param_5, u8 param_6)
 	{
+		JAISound* sound = nullptr;
 		if (gateCheck(param_1))
-			MSoundSESystem::MSoundSE::startSoundActor(
+			sound = MSoundSESystem::MSoundSE::startSoundActor(
 			    param_1, param_2, param_3, param_4, param_5, param_6);
+		return sound;
 	}
 
 	void startSoundActorWithInfo(u32 param_1, const Vec* param_2, Vec* param_3,

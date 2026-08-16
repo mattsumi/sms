@@ -25,9 +25,21 @@ TTimeRec* TTimeRec::start(u16 param_1)
 	return _instance;
 }
 
-void TTimeRec::end() { }
+// UNUSED, size matches mario.MAP (0x34)
+void TTimeRec::end()
+{
+	if (_instance) {
+		delete _instance;
+		_instance = nullptr;
+	}
+}
 
-void TTimeRec::drawSyncCallbackSt(u16) { }
+// UNUSED, size matches mario.MAP (0x5C)
+void TTimeRec::drawSyncCallbackSt(u16 param_1)
+{
+	if (_instance)
+		_instance->TTimeRec::drawSyncCallback(param_1);
+}
 
 TTimeRec::TTimeRec(u16 param_1)
     : unk814(0)
@@ -37,6 +49,11 @@ TTimeRec::TTimeRec(u16 param_1)
 {
 }
 
+// TODO: 99.2% - instructions fully match but curr/address-temp registers are
+// transposed in the loop (target: curr=r5, addr=r7; ours: curr=r7, addr=r5).
+// ~45 source spellings, all opt levels and compiler versions keep our
+// allocation; the target looks linear-scan-allocated. See suppleGXTime for the
+// same loop.
 void TTimeRec::flip()
 {
 	TTimeArray& array = _instance->crTimeAry()[1];
@@ -71,7 +88,26 @@ void TTimeRec::snapGXTime(u32 param_1)
 	}
 }
 
-void TTimeRec::suppleGXTime() { }
+// UNUSED, size matches mario.MAP (0x68)
+void TTimeRec::suppleGXTime()
+{
+	if (_instance == nullptr)
+		return;
+	TTimeArray& array = _instance->crTimeAry()[1];
+	int size          = array.mSize;
+	if (size >= 3) {
+		int i    = size - 1;
+		u32 curr = array.mEntries[i].time;
+		while (i > 0) {
+			--i;
+			if (array.mEntries[i].time == 0) {
+				array.mEntries[i].time = curr;
+			} else {
+				curr = array.mEntries[i].time;
+			}
+		}
+	}
+}
 
 void TTimeRec::drawSyncCallback(u16 param_1)
 {

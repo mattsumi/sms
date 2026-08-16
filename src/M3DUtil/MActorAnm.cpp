@@ -129,7 +129,7 @@ void MActorAnmBck::updateOut()
 void MActorAnmBck::setAnmFromIndex(int param_1, u16*)
 {
 	if (unk2A == 2 && unk0 != -1)
-		unk34->keepCurAnm(getData()->getAnmPtr(unk0), unk4.getFrame());
+		unk34->keepCurAnm(getData()->getAnmPtr(getUnk0()), unk4.getFrame());
 
 	setFrameCtrl(param_1);
 
