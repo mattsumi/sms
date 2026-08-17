@@ -58,11 +58,13 @@ void TObjManager::load(JSUMemoryInputStream& stream)
 	JDrama::TViewObj::load(stream);
 
 	char buffer[0x100];
+	u32 capacity;
 	stream.readString(buffer, 0x100);
-	unk1C = (TObjChara*)JDrama::TNameRefGen::getInstance()
-	            ->getRootNameRef()
-	            ->search(buffer);
-	mCapacity = stream.readU32();
+	JDrama::TNameRef* nameRef
+	    = JDrama::TNameRefGen::getInstance()->getRootNameRef()->search(buffer);
+	unk1C = (TObjChara*)nameRef;
+	stream.read(&capacity, sizeof(capacity));
+	mCapacity = capacity;
 	unk18     = new THitActor*[mCapacity];
 }
 

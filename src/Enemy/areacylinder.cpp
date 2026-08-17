@@ -17,8 +17,7 @@ void TAreaCylinder::load(JSUMemoryInputStream& stream)
 
 	stream >> mPos.x >> mPos.y >> mPos.z;
 	stream >> v.x >> v.y >> v.z;
-	stream >> mRadius >> mHeight;
-	stream >> v.z;
+	stream >> mRadius >> mHeight >> v.z;
 
 	mRadius *= 50.0f;
 	mHeight *= 50.0f;
