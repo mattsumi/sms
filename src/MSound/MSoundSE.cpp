@@ -497,6 +497,9 @@ void MSoundSE::startSoundActorWithInfo(u32 param_1, const Vec* param_2,
 		else
 			param_1 += 0x4;
 		break;
+
+	case MSD_SE_OBJ_MA_MIRROR_MOVE:
+		return;
 	}
 
 	if (JALSystem::gateCheckFunc(param_1, fVar7) != true) {
