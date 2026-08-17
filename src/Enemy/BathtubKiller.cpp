@@ -150,7 +150,21 @@ void TBathtubKiller::bind() { }
 
 void TBathtubKiller::perform(u32 cue, JDrama::TGraphics* graphics) { }
 
-void TBathtubKiller::makeNoseColor() { }
+void TBathtubKiller::makeNoseColor()
+{
+	if (unk194 == 2) {
+		unk1FC += unk1F8;
+		if (unk1FC > 1.0f) {
+			unk1FC = 1.0f;
+			unk1F8 = -getSaveParam2()->mSLColorChangeRateDelta.get();
+		}
+		if (unk1FC < 0.0f) {
+			unk1FC = 0.0f;
+			unk1F8 = getSaveParam2()->mSLColorChangeRateDelta.get();
+		}
+		unk1E0.r = (u8)(255.0f * unk1FC);
+	}
+}
 
 f32 TBathtubKiller::getBathtubY() { return 0.0f; }
 
