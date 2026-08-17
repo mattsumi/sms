@@ -100,3 +100,9 @@ void TIgaiga::setWalkAnm() { setBckAnm(3); }
 const char** TIgaiga::getBasNameTable() const { return igaiga_bastable; }
 
 const char** TGorogoro::getBasNameTable() const { return gorogoro_bastable; }
+
+void TGorogoro::setMActorAndKeeper()
+{
+	mMActorKeeper = new TMActorKeeper(mManager, 1);
+	mMActor       = mMActorKeeper->createMActor("bosspaku_head.bmd", 3);
+}
