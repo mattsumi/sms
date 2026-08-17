@@ -847,7 +847,7 @@ public:
 	void addVelocity(f32);
 	BOOL considerRotateJumpStart();
 	BOOL canBendBody();
-	void isSpeedZero();
+	BOOL isSpeedZero();
 	void changePos(const Vec&);
 	void setNormalAttackArea();
 	void setPlayerVelocity(f32);

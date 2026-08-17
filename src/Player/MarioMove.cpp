@@ -215,7 +215,7 @@ BOOL TMario::canBendBody()
 	return TRUE;
 }
 
-void TMario::isSpeedZero() { }
+BOOL TMario::isSpeedZero() { }
 
 void TMario::changePos(const Vec&) { }
 
@@ -2082,7 +2082,7 @@ void TMario::thinkWaterSurface()
 
 	if (isInWater && mPosition.y < mFloorPosition.z) {
 		if (mFloorPosition.z > mPosition.y + mRunParams.mSwimDepth.get()) {
-			// deep water — Mario plunges in
+			// deep water - Mario plunges in
 			if (onYoshi()) {
 				mYoshi->disappear();
 				if (mWaterGun != nullptr) {

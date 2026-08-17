@@ -269,7 +269,7 @@ BOOL TEnemyMario::canJumpToNode() const
 
 // UNUSED in retail (inlined away), size 0x8 = 2 PPC instructions. A plain
 // bit-test compiles to 7 (MWCC's neg/subic/subfe bool normalization). 2 instrs
-// is just a load + blr, i.e. no room to mask — the real body must return a
+// is just a load + blr, i.e. no room to mask - the real body must return a
 // non-normalized value. Exact form is TODO (dead code, no callsite to anchor).
 bool TEnemyMario::isDispPencil() const { return false; }
 
