@@ -606,7 +606,12 @@ void TPollutionCounterLayer::cleanProhibitArea(int param_1) const
 	GXEnd();
 }
 
-void TPollutionCounterLayer::drawModelStamp(int) { }
+void TPollutionCounterLayer::drawModelStamp(int layer_index)
+{
+	j3dSys.setUnk4C(7);
+	mModelStampDrawBuffers[layer_index]->draw();
+	mModelStampDrawBuffers[layer_index]->frameInit();
+}
 
 void TPollutionCounterLayer::countTexDegree(int layer_index)
 {
@@ -615,11 +620,8 @@ void TPollutionCounterLayer::countTexDegree(int layer_index)
 
 	ReInitializeGX();
 	drawPollutionLayer(layer_index);
-	if (mModelStampTaskNum != 0) {
-		j3dSys.setUnk4C(7);
-		mModelStampDrawBuffers[layer_index]->draw();
-		mModelStampDrawBuffers[layer_index]->frameInit();
-	}
+	if (mModelStampTaskNum != 0)
+		drawModelStamp(layer_index);
 
 	ReInitializeGX();
 	drawJointObjStamp(layer_index);
