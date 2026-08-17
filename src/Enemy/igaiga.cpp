@@ -1,4 +1,7 @@
 #include <Enemy/Igaiga.hpp>
+#include <JSystem/J3D/J3DGraphLoader/J3DModelLoader.hpp>
+#include <JSystem/JKernel/JKRFileLoader.hpp>
+#include <M3DUtil/SDLModel.hpp>
 #include <Map/MapData.hpp>
 #include <Player/MarioAccess.hpp>
 #include <MSound/MSound.hpp>
@@ -30,6 +33,20 @@ bool TRollEnemy::isCollidMove(THitActor* actor)
 
 	actor->receiveMessage(this, HIT_MESSAGE_ATTACK);
 	return false;
+}
+
+void TIgaigaPolluteModelManager::init(TLiveActor* actor)
+{
+	TEnemyPolluteModelManager::init(actor);
+
+	void* res = JKRFileLoader::getGlbResource(
+	    "/scene/igaiga/stamp_igaiga_model1.bmd");
+	SDLModelData* modelData
+	    = new SDLModelData(J3DModelLoaderDataBase::load(res, 0x10210000));
+
+	for (int i = 0; i < unk14; ++i)
+		unk18[i] = new TIgaigaPolluteModel(actor, 0, modelData,
+		                                   "イガイガ汚染モデル");
 }
 
 void TIgaigaManager::createModelData()
