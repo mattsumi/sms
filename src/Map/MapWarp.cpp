@@ -85,13 +85,8 @@ void TMapWarp::initModel()
 			    ->sleep();
 }
 
-void getWarpPointNo(const char*) { }
-
-void loadWarpPointPos(JSUMemoryInputStream&, int, Vec*) { }
-
-void TMapWarp::init(JSUMemoryInputStream& stream)
+int getWarpPointNo(const char* name)
 {
-	// Fabricated
 	struct NameTableEntry {
 		const char* unk0;
 		u32 unk4;
@@ -104,6 +99,28 @@ void TMapWarp::init(JSUMemoryInputStream& stream)
 		{ "warpI1", 16 }, { "warpI0", 17 }, { nullptr, 0 },
 	};
 
+	u32 i = 0;
+	while (strcmp(point_name_table[i].unk0, name) != 0)
+		++i;
+
+	return point_name_table[i].unk4;
+}
+
+void loadWarpPointPos(JSUMemoryInputStream& stream, int count, Vec* points)
+{
+	for (int i = 0; i < count; ++i) {
+		const char* name = stream.readString();
+		int pointNo      = getWarpPointNo(name);
+		stream >> points[pointNo].x >> points[pointNo].y >> points[pointNo].z;
+
+		u32 dummy;
+		stream >> dummy >> dummy >> dummy;
+		stream >> dummy >> dummy >> dummy;
+	}
+}
+
+void TMapWarp::init(JSUMemoryInputStream& stream)
+{
 	unk0 = stream.readU32();
 	if (!unk0)
 		return;
@@ -120,26 +137,7 @@ void TMapWarp::init(JSUMemoryInputStream& stream)
 		local_180[i] = stream.readU32();
 	}
 
-	int cnt = unk0 * 2;
-	for (int i = 0; i < cnt; ++i) {
-		const char* str = stream.readString();
-		u32 needle      = 0;
-		while (strcmp(point_name_table[needle].unk0, str) != 0)
-			++needle;
-
-		u32 idx = point_name_table[needle].unk4;
-		stream >> local_130[idx].x;
-		stream >> local_130[idx].y;
-		stream >> local_130[idx].z;
-
-		u32 dummy;
-		stream >> dummy;
-		stream >> dummy;
-		stream >> dummy;
-		stream >> dummy;
-		stream >> dummy;
-		stream >> dummy;
-	}
+	loadWarpPointPos(stream, unk0 * 2, local_130);
 
 	for (int i = 0; i < unk0; ++i) {
 		unk4[2 * i].unk8.x = local_130[2 * i].x - local_130[2 * i + 1].x;
