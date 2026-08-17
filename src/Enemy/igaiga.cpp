@@ -5,3 +5,8 @@ void TRollEnemy::attackToMario()
 {
 	SMS_SendMessageToMario(this, HIT_MESSAGE_ATTACK);
 }
+
+void TIgaiga::perform(u32 cue, JDrama::TGraphics* graphics)
+{
+	TSmallEnemy::perform(cue, graphics);
+}
