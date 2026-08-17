@@ -1,4 +1,6 @@
 #include <Enemy/BathtubKiller.hpp>
+#include <Enemy/Conductor.hpp>
+#include <Enemy/EffectObj.hpp>
 #include <Strategic/ObjModel.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DModel.hpp>
 
@@ -243,7 +245,14 @@ bool TBathtubKiller::isAboided() { return false; }
 
 bool TBathtubKiller::canChase() { return false; }
 
-void TBathtubKiller::generateExplosion() { }
+void TBathtubKiller::generateExplosion()
+{
+	TEffectExplosion* effect
+	    = (TEffectExplosion*)gpConductor->makeOneEnemyAppear(
+	        mPosition, "エフェクト爆発マネージャー", 1);
+	if (effect != nullptr)
+		effect->generate(mPosition, mScaling);
+}
 
 DEFINE_NERVE(TNerveBathtubKillerWander, TLiveActor) { return FALSE; }
 
