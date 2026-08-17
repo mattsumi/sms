@@ -99,6 +99,19 @@ void TIgaiga::setWalkAnm() { setBckAnm(3); }
 
 const char** TIgaiga::getBasNameTable() const { return igaiga_bastable; }
 
+void TGorogoroPolluteModelManager::init(TLiveActor* actor)
+{
+	TEnemyPolluteModelManager::init(actor);
+
+	void* res = JKRFileLoader::getGlbResource(
+	    "/scene/gorogoro/bosspaku_head_stamp.bmd");
+	SDLModelData* modelData
+	    = new SDLModelData(J3DModelLoaderDataBase::load(res, 0x10210000));
+
+	for (int i = 0; i < unk14; ++i)
+		unk18[i] = new TGorogoroPolluteModel(actor, 0, modelData, "汚染モデル");
+}
+
 void TGorogoro::rollSE()
 {
 	SMSGetMSound()->startSoundActorWithInfo(
