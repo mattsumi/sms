@@ -106,7 +106,16 @@ void TBathtubKiller::init(TLiveManager*) { }
 
 void TBathtubKiller::setMActorAndKeeper() { }
 
-void TBathtubKiller::reset() { }
+void TBathtubKiller::reset()
+{
+	TSmallEnemy::reset();
+	offLiveFlag(LIVE_FLAG_DEAD);
+	offLiveFlag(LIVE_FLAG_UNK8);
+	offHitFlag(HIT_FLAG_NO_COLLISION);
+	offHitFlag(HIT_FLAG_CANNOT_ATTACK);
+	offHitFlag(HIT_FLAG_CANNOT_GET_HIT);
+	resetBathtubKiller();
+}
 
 void TBathtubKiller::resetBathtubKiller() { }
 
