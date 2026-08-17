@@ -9,6 +9,17 @@ void TRollEnemy::attackToMario()
 	SMS_SendMessageToMario(this, HIT_MESSAGE_ATTACK);
 }
 
+bool TRollEnemy::isCollidMove(THitActor* actor)
+{
+	if (actor->isActorType(0x4000022B)) {
+		kill();
+		return true;
+	}
+
+	actor->receiveMessage(this, HIT_MESSAGE_ATTACK);
+	return false;
+}
+
 void TIgaigaManager::createModelData()
 {
 	static TModelDataLoadEntry entry[] = {
