@@ -1,4 +1,5 @@
 #include <System/MarNameRefGen.hpp>
+#include <Enemy/DebuTelesa.hpp>
 #include <Enemy/EggGen.hpp>
 #include <Enemy/EffectObj.hpp>
 #include <Enemy/EnemyManager.hpp>
@@ -293,13 +294,11 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 	if (strcmp(name, "MarioModokiTelesa") == 0)
 		return new TMarioModokiTelesa;
 
-	// TODO:
-	// if ( strcmp(name, "DebuTelesaManager") == 0)
-	//     return new TDebuTelesaManager("デブテルサマネージャー");
+	if (strcmp(name, "DebuTelesaManager") == 0)
+		return new TDebuTelesaManager("デブテルサマネージャー");
 
-	// TODO:
-	// if ( strcmp(name, "DebuTelesa") == 0)
-	//     return new TDebuTelesa;
+	if (strcmp(name, "DebuTelesa") == 0)
+		return new TDebuTelesa("デブテルサ");
 
 	if (strcmp(name, "PoiHanaManager") == 0)
 		return new TPoiHanaManager;
