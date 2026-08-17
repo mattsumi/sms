@@ -1,4 +1,5 @@
 #include <Enemy/Igaiga.hpp>
+#include <Map/MapData.hpp>
 #include <Player/MarioAccess.hpp>
 #include <MSound/MSound.hpp>
 
@@ -17,6 +18,13 @@ void TIgaiga::rollSE()
 	MSound* sound = gpMSound;
 	sound->startSoundActorSpecial(MSD_SE_EN_IGAIGA_ROLL, &mPosition, mScaling.x,
 	                              mMarchSpeed, 0, nullptr, 0, 4);
+}
+
+void TIgaiga::boundSE()
+{
+	SMSGetMSound()->startSoundActorWithInfo(
+	    MSD_SE_EN_IGAIGA_BOUND, &mPosition, nullptr,
+	    fabsf(getGroundPlane()->getNormal().y), 0, 0, nullptr, 0, 4);
 }
 
 void TIgaiga::setWalkAnm() { setBckAnm(3); }
