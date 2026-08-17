@@ -281,7 +281,17 @@ void TMapCollisionData::addCheckDataToGrid(TBGCheckData* param_1, int kind)
 	}
 }
 
-void TMapCollisionData::removeCheckListNode(s32, s32) { }
+void TMapCollisionData::removeCheckListNode(s32 start, s32 count)
+{
+	for (int i = start; i < start + count; ++i) {
+		TBGCheckListWarp* curr = &unk30[i];
+		curr->getPreNode()->setNext(curr->getNext());
+		if (curr->getNext() != nullptr) {
+			curr->getNext()->setPreNode(curr->getPreNode());
+		}
+		curr->unk8 = nullptr;
+	}
+}
 
 void TMapCollisionData::updateCheckListNode(s32 param_1, s32 param_2,
                                             s32 param_3)
@@ -318,7 +328,6 @@ void printList(const TBGCheckList*) { }
 
 void TMapCollisionData::removeCheckListData(u16 start, s32 count)
 {
-	TBGCheckListWarp* curr;
 	int rangeEnd;
 	u32 rangeStart;
 	int i;
@@ -332,14 +341,7 @@ void TMapCollisionData::removeCheckListData(u16 start, s32 count)
 	unk42[start] = 9999;
 	unk242       = start;
 
-	for (i = rangeStart; i < rangeEnd; ++i) {
-		curr = &unk30[i];
-		curr->getPreNode()->setNext(curr->getNext());
-		if (curr->getNext() != nullptr) {
-			curr->getNext()->setPreNode(curr->getPreNode());
-		}
-		curr->unk8 = nullptr;
-	}
+	removeCheckListNode(rangeStart, count);
 
 	unk40 -= count;
 
