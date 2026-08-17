@@ -101,13 +101,13 @@ void TSky::load(JSUMemoryInputStream& stream)
 	    J3DMLF_MaterialPEFull | J3DMLF_UseUniqueMaterials
 	        | (2 << J3DMLF_TevStageNumShift));
 
-	if (gpMapObjManager->unk68) {
+	if (gpMapObjManager->getUnk68()) {
 		unk44->getModel()->getModelData()->setMaterialTable(
 		    gpMapObjManager->getUnk68(), J3DMatCopyFlag_All);
 		unk44->initDL();
 	}
 
-	if (gpMarDirector->mMap != 15)
+	if (gpMarDirector->getCurrentMap() != 15)
 		TMapObjBase::startAllAnim(unk44, "sky");
 }
 
