@@ -199,9 +199,10 @@ TMarioParticleManager::emit(s32 param_1, const JGeometry::TVec3<f32>* param_2,
 	if (param_3 == 2)
 		if (JPABaseEmitter* emitter = unk3B8->createSimpleEmitterID(
 		        *param_2, param_1, param_3, 0, nullptr, nullptr)) {
-			emitter->mDraw.swapImage(
-			    gpScreenTexture->getTexture()->getTexInfo(),
-			    emitter->mDraw.getMainTextureID(0));
+			const ResTIMG* texture
+			    = gpScreenTexture->getTexture()->getTexInfo();
+			emitter->mDraw.swapImage(texture,
+			                         emitter->mDraw.getMainTextureID(0));
 			return emitter;
 		}
 
@@ -283,9 +284,10 @@ TMarioParticleManager::emitAndBindToPosPtr(s32 param_1,
 		        *param_2, param_1, param_3, 0, nullptr, nullptr)) {
 			emitter->unk120 = (void*)param_2;
 			emitter->unk110 = &emitterCallBackBindToPosPtr;
-			emitter->mDraw.swapImage(
-			    gpScreenTexture->getTexture()->getTexInfo(),
-			    emitter->mDraw.getMainTextureID(0));
+			const ResTIMG* texture
+			    = gpScreenTexture->getTexture()->getTexInfo();
+			emitter->mDraw.swapImage(texture,
+			                         emitter->mDraw.getMainTextureID(0));
 			return emitter;
 		}
 
@@ -347,9 +349,10 @@ JPABaseEmitter* TMarioParticleManager::emitAndBindToMtxPtr(s32 param_1,
 		        local_24, param_1, param_3, 0, nullptr, nullptr)) {
 			emitter->unk120 = (void*)param_2;
 			emitter->unk110 = &emitterCallBackBindToMtxPtr;
-			emitter->mDraw.swapImage(
-			    gpScreenTexture->getTexture()->getTexInfo(),
-			    emitter->mDraw.getMainTextureID(0));
+			const ResTIMG* texture
+			    = gpScreenTexture->getTexture()->getTexInfo();
+			emitter->mDraw.swapImage(texture,
+			                         emitter->mDraw.getMainTextureID(0));
 			return emitter;
 		}
 
@@ -410,9 +413,10 @@ TMarioParticleManager::emitAndBindToSRTMtxPtr(s32 param_1, MtxPtr param_2,
 		        local_24, param_1, param_3, 0, nullptr, nullptr)) {
 			emitter->unk120 = (void*)param_2;
 			emitter->unk110 = &emitterCallBackBindToSRTMtxPtr;
-			emitter->mDraw.swapImage(
-			    gpScreenTexture->getTexture()->getTexInfo(),
-			    emitter->mDraw.getMainTextureID(0));
+			const ResTIMG* texture
+			    = gpScreenTexture->getTexture()->getTexInfo();
+			emitter->mDraw.swapImage(texture,
+			                         emitter->mDraw.getMainTextureID(0));
 			return emitter;
 		}
 

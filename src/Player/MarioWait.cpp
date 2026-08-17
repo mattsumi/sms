@@ -76,7 +76,22 @@ BOOL TMario::canPut()
 	return 1;
 }
 
-void TMario::checkPutStart() { }
+void TMario::checkPutStart()
+{
+	TTakeActor* heldObject = getHeldObject();
+	if (heldObject != nullptr && (mInput & 0x2000 ? true : false)) {
+		switch (heldObject->getActorType()) {
+		case 0x80000001:
+			changePlayerStatus(MARIO_STATUS_PITCHING, 0, false);
+			break;
+
+		default:
+			if (canPut())
+				changePlayerStatus(MARIO_STATUS_PUTTING, 0, false);
+			break;
+		}
+	}
+}
 
 BOOL TMario::waitingCommonEvents()
 {
@@ -563,19 +578,7 @@ BOOL TMario::waitMain()
 	checkEnforceJump();
 	checkCollision();
 	setNormalAttackArea();
-
-	if (mHeldObject != nullptr && (mInput & 0x2000 ? true : false)) {
-		switch (mHeldObject->getActorType()) {
-		case 0x80000001:
-			changePlayerStatus(MARIO_STATUS_PITCHING, 0, false);
-			break;
-
-		default:
-			if (canPut())
-				changePlayerStatus(MARIO_STATUS_PUTTING, 0, false);
-			break;
-		}
-	}
+	checkPutStart();
 
 	switch (mStatus) {
 	case MARIO_STATUS_WAIT:
