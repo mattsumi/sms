@@ -2,6 +2,7 @@
 #include <Enemy/Conductor.hpp>
 #include <Enemy/EffectObj.hpp>
 #include <Strategic/ObjModel.hpp>
+#include <Strategic/Spine.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DModel.hpp>
 
 // rogue includes needed for matching sinit & bss
@@ -303,7 +304,23 @@ DEFINE_NERVE(TNerveBathtubKillerStraight, TLiveActor) { return FALSE; }
 
 DEFINE_NERVE(TNerveBathtubKillerBreak, TLiveActor) { return FALSE; }
 
-DEFINE_NERVE(TNerveBathtubKillerExplosion, TLiveActor) { return FALSE; }
+DEFINE_NERVE(TNerveBathtubKillerExplosion, TLiveActor)
+{
+	TBathtubKiller* self = (TBathtubKiller*)spine->getBody();
+
+	if (spine->getTime() == 0) {
+		self->setDeadBathtubKillerAnm();
+		self->generateExplosion();
+		self->onHitFlag(HIT_FLAG_NO_COLLISION);
+	}
+
+	if (self->checkCurAnmEnd(0)) {
+		self->killBathtubKiller();
+		return true;
+	}
+
+	return false;
+}
 
 TBathtubKillerManager::TBathtubKillerManager(const char* name)
     : TSmallEnemyManager(name)
