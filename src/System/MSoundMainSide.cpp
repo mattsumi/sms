@@ -60,7 +60,7 @@ int MSMainProc::getMonteVillageActorArea(const Vec& param_1)
 	return result;
 }
 
-void MSMainProc::entranceDemoWipeInEnd() { }
+void MSMainProc::entranceDemoWipeInEnd() { gpMSound->unkC8[4] = 1; }
 
 void MSMainProc::toInnerCameraDemo() { gpMSound->unkC8[2] = 1; }
 
