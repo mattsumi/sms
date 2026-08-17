@@ -179,7 +179,16 @@ void TBathtubKiller::moveParabolic()
 
 void TBathtubKiller::moveChasing() { }
 
-void TBathtubKiller::moveStraight() { }
+void TBathtubKiller::moveStraight()
+{
+	JGeometry::TVec3<f32> velocity;
+	mQuat.getZDir(velocity);
+	velocity.y = 0.0f;
+	velocity.normalize();
+	velocity *= unk1A0;
+	mVelocity.set(velocity);
+	makeVelocityQuat();
+}
 
 void TBathtubKiller::makeVelocityQuat() { makeQuat(mVelocity, unk198, 0.1f); }
 
