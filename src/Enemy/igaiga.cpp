@@ -10,3 +10,5 @@ void TIgaiga::perform(u32 cue, JDrama::TGraphics* graphics)
 {
 	TSmallEnemy::perform(cue, graphics);
 }
+
+void TIgaiga::setWalkAnm() { setBckAnm(3); }
