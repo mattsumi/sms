@@ -9,6 +9,15 @@ void TRollEnemy::attackToMario()
 	SMS_SendMessageToMario(this, HIT_MESSAGE_ATTACK);
 }
 
+void TIgaigaManager::createModelData()
+{
+	static TModelDataLoadEntry entry[] = {
+		{ "igaiga_model1.bmd", 0x11240000, 0 },
+		{ nullptr, 0, 0 },
+	};
+	createModelDataArray(entry);
+}
+
 void TIgaiga::setMActorAndKeeper()
 {
 	mMActorKeeper = new TMActorKeeper(mManager, 1);
