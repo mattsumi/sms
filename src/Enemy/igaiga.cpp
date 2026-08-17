@@ -17,6 +17,12 @@ static const char* igaiga_bastable[] = {
 	"/scene/igaiga/bas/igaiga_waterhit1.bas",
 	nullptr,
 };
+static const char* gorogoro_bastable[] = {
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+};
 static TRollEnemy* gpCurRollEnemy;
 
 void TRollEnemy::attackToMario()
@@ -92,3 +98,5 @@ void TIgaiga::boundSE()
 void TIgaiga::setWalkAnm() { setBckAnm(3); }
 
 const char** TIgaiga::getBasNameTable() const { return igaiga_bastable; }
+
+const char** TGorogoro::getBasNameTable() const { return gorogoro_bastable; }
