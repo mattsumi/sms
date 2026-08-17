@@ -121,7 +121,12 @@ void TBathtubKiller::resetBathtubKiller() { }
 
 void TBathtubKiller::generateItemBathtubKiller() { }
 
-void TBathtubKiller::killBathtubKiller() { }
+void TBathtubKiller::killBathtubKiller()
+{
+	unk21C = 0;
+	onLiveFlag(LIVE_FLAG_DEAD);
+	stopAnmSound();
+}
 
 void TBathtubKiller::breakBathtubKiller() { }
 
