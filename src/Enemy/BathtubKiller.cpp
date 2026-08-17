@@ -243,7 +243,11 @@ const char** TBathtubKiller::getBasNameTable() const
 	return bathtubkiller_bastable;
 }
 
-void TBathtubKiller::setNormalBathtubKillerAnm() { }
+void TBathtubKiller::setNormalBathtubKillerAnm()
+{
+	mMActor = getActorKeeper()->getMActor("bathtubkiller_model1.bmd");
+	setBckAnm(1);
+}
 
 void TBathtubKiller::setChaseBathtubKillerAnm()
 {
