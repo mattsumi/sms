@@ -479,7 +479,8 @@ void TFlagManager::correctFlag()
 
 void TFlagManager::save(JSUMemoryOutputStream& out)
 {
-	mLastSaveTimeBackup = mLastSaveTime;
+	s64 backup          = mLastSaveTime;
+	mLastSaveTimeBackup = backup;
 	mLastSaveTime       = OSGetTime();
 
 	incFlag(0x20000, 1);
