@@ -10,9 +10,74 @@ static void FifoSetTevColorS10(GXTevRegID, GXColorS10) { }
 
 static void FifoSetTevKColor(GXTevKColorID, GXColor) { }
 
-static void FifoSetFogRangeAdj(u8, u16, GXFogAdjTable*) { }
+static void FifoSetFogRangeAdj(u8 enable, u16 center, GXFogAdjTable* table)
+{
+	if (enable) {
+		for (int i = 0; i < 10; i += 2) {
+			u32 reg
+			    = (0xE9 + (i / 2)) << 24 | table->r[i + 1] << 12 | table->r[i];
+			GXWGFifo.u8  = 0x61;
+			GXWGFifo.u32 = reg;
+		}
+	}
 
-static void FifoSetFog(GXFogType, float, float, float, float, GXColor) { }
+	u32 reg      = 0xE8 << 24 | center + 342 | enable << 10;
+	GXWGFifo.u8  = 0x61;
+	GXWGFifo.u32 = reg;
+}
+
+static void FifoSetFog(GXFogType type, float startz, float endz, float nearz,
+                       float farz, GXColor color)
+{
+	float A;
+	float B;
+	float B_mant;
+	float C;
+	float A_f;
+	u32 b_expn;
+	u32 b_m;
+	u32 a_hex;
+	u32 c_hex;
+
+	if ((farz == nearz) || (endz == startz)) {
+		A = 0.0f;
+		B = 0.5f;
+		C = 0.0f;
+	} else {
+		A = (farz * nearz) / ((farz - nearz) * (endz - startz));
+		B = farz / (farz - nearz);
+		C = startz / (endz - startz);
+	}
+
+	B_mant = B;
+	b_expn = 1;
+	while (B_mant > 1.0) {
+		B_mant *= 0.5f;
+		b_expn++;
+	}
+	while (B_mant > 0.0f && B_mant < 0.5) {
+		B_mant *= 2.0f;
+		b_expn--;
+	}
+
+	A_f = A / (1 << b_expn);
+	b_m = (u32)(8388638.0f * B_mant);
+
+	a_hex = *(u32*)&A_f;
+	c_hex = *(u32*)&C;
+
+	GXWGFifo.u8  = 0x61;
+	GXWGFifo.u32 = BP_FOG_UNK0(a_hex >> 12, 0xee);
+	GXWGFifo.u8  = 0x61;
+	GXWGFifo.u32 = BP_FOG_UNK1(b_m, 0xef);
+	GXWGFifo.u8  = 0x61;
+	GXWGFifo.u32 = BP_FOG_UNK2(b_expn, 0xf0);
+	GXWGFifo.u8  = 0x61;
+	GXWGFifo.u32 = BP_FOG_UNK3(c_hex >> 12, 0, type, 0xf1);
+	u32 fogclr   = BP_FOG_COLOR(color.r, color.g, color.b, 0xf2);
+	GXWGFifo.u8  = 0x61;
+	GXWGFifo.u32 = fogclr;
+}
 
 static void SetFogBase(const J3DFogInfo*) { }
 
@@ -127,7 +192,26 @@ void SMS_InitPacket_ThreeTevColor(J3DModel* param_1, u16 param_2,
 	packet->setCallback(&ShapePacketCallBackFunc);
 }
 
-// fabricated
+struct PacketUserData_CallDL {
+	u32 unk0;
+	u8* unk4;
+	u32 unk8;
+};
+
+void SMS_InitPacket_CallDL(J3DModel* param_1, u16 param_2, u8* param_3,
+                           u32 param_4)
+{
+	J3DShapePacket* packet          = InitPacket_Sub(param_1, param_2);
+	PacketUserData_CallDL* userData = new PacketUserData_CallDL;
+
+	userData->unk0 = 4;
+	userData->unk4 = param_3;
+	userData->unk8 = param_4;
+
+	packet->setUserArea((u32)userData);
+	packet->setCallback(&ShapePacketCallBackFunc);
+}
+
 struct PacketUserData_Fog {
 	u32 unk0;
 	J3DFog* unk4;
@@ -135,12 +219,11 @@ struct PacketUserData_Fog {
 
 void SMS_InitPacket_Fog(J3DModel* param_1, u16 param_2)
 {
+	J3DPEBlock* peBlock = param_1->getModelData()
+	                          ->getMaterialNodePointer(param_2)
+	                          ->getPEBlock();
 	J3DShapePacket* packet = InitPacket_Sub(param_1, param_2);
-
-	J3DFog* fog = param_1->getModelData()
-	                  ->getMaterialNodePointer(param_2)
-	                  ->getPEBlock()
-	                  ->getFog();
+	J3DFog* fog            = peBlock->getFog();
 
 	PacketUserData_Fog* userData = new PacketUserData_Fog;
 	userData->unk0               = 5;
