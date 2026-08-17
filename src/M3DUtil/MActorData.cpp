@@ -109,6 +109,15 @@ u32 MActorAnmData::partsNameToIdx(const char* name)
 	return -1;
 }
 
+void MActorAnmData::addIncidentalAnm(const char* name, int index)
+{
+	MActorSubAnmInfo info;
+	info.unk0 = index;
+	info.unk4 = name;
+	++unk0;
+	unk1C.push_back(info);
+}
+
 void MActorAnmData::init(const char* param_1, const char** param_2)
 {
 	char thing[256];
