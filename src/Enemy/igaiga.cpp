@@ -2,10 +2,17 @@
 #include <Map/MapData.hpp>
 #include <Player/MarioAccess.hpp>
 #include <MSound/MSound.hpp>
+#include <Strategic/ObjModel.hpp>
 
 void TRollEnemy::attackToMario()
 {
 	SMS_SendMessageToMario(this, HIT_MESSAGE_ATTACK);
+}
+
+void TIgaiga::setMActorAndKeeper()
+{
+	mMActorKeeper = new TMActorKeeper(mManager, 1);
+	mMActor       = mMActorKeeper->createMActor("igaiga_model1.bmd", 0);
 }
 
 void TIgaiga::perform(u32 cue, JDrama::TGraphics* graphics)
