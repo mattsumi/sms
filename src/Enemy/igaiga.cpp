@@ -99,6 +99,20 @@ void TIgaiga::setWalkAnm() { setBckAnm(3); }
 
 const char** TIgaiga::getBasNameTable() const { return igaiga_bastable; }
 
+void TGorogoro::rollSE()
+{
+	SMSGetMSound()->startSoundActorWithInfo(
+	    MSD_SE_BS_KRPAKU_ROLL, &mPosition, nullptr,
+	    fabsf(getGroundPlane()->getNormal().y), 0, 0, nullptr, 0, 4);
+}
+
+void TGorogoro::boundSE()
+{
+	SMSGetMSound()->startSoundActorWithInfo(
+	    MSD_SE_BS_KRPAKU_GND, &mPosition, nullptr,
+	    fabsf(getGroundPlane()->getNormal().y), 0, 0, nullptr, 0, 4);
+}
+
 const char** TGorogoro::getBasNameTable() const { return gorogoro_bastable; }
 
 void TGorogoro::setMActorAndKeeper()
