@@ -75,17 +75,10 @@ public:
 		inst->snapGXTime(param_1);
 	}
 
-	// TODO: TLiveManager::perform and TObjManager::perform want this
-	// inline to carry 8 more stack bytes with the TColor object as the
-	// topmost local (frame +8, stb at 0x34); every shape tried either
-	// lands the frame 8 short with perfect registers (this one), or hits
-	// the right frame with the TColor slot 4 low (instance() accessor +
-	// col local), or transposes the endTimer _instance register
-	// (accessor + declare-assign col). TSnapTimeObj::perform pins
-	// endTimer to a direct _instance read, so the fix must live here.
 	static void startTimer(u8 r = 0xff, u8 g = 0xff, u8 b = 0xff, u8 a = 0xff)
 	{
-		TTimeRec* inst = instance();
+		TTimeRec* inst = _instance;
+		TTimeArray* arrays;
 
 		u32 col;
 		JUtility::TColor color(r, g, b, a);
@@ -93,8 +86,10 @@ public:
 
 		if (!inst)
 			return;
-		OSTick tick = OSGetTick();
-		inst->crTimeAry()[0].append(tick, col);
+		OSTick tick       = OSGetTick();
+		arrays            = inst->crTimeAry();
+		TTimeArray& array = arrays[0];
+		array.append(tick, col);
 	}
 
 	static void startTimer(u32 param_1)
