@@ -5,6 +5,9 @@
 #include <Camera/cameralib.hpp>
 #include <Player/MarioAccess.hpp>
 
+// rogue
+#include <System/DummyStrings.hpp>
+
 void TNpcThrow::throwMario(THitActor* param_1)
 {
 	JGeometry::TVec3<f32> local_14;

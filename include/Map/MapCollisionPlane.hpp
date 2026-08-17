@@ -13,7 +13,10 @@ public:
 	TBGCheckData* getCheckData(int x, int z, int which) const;
 
 	f32 gridToWorld(int v) { return v * mScale - mExtent; }
-	f32 worldToGrid(f32 v) { return mOneOverScale * (v + mExtent); }
+	// TODO: the truncating int return is required to match checkPlaneGround;
+	// TMapObjPlane::depress needs the fractional part, so it probably
+	// spelled the expression out instead of calling this
+	int worldToGrid(f32 v) { return mOneOverScale * (v + mExtent); }
 
 public:
 	/* 0x0 */ int mGridWidth;

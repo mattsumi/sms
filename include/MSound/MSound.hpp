@@ -116,10 +116,9 @@ public:
 	// Returning the handle through a named local (JAIBasic house style,
 	// cf. startSoundActorReturnHandle) is required for callers' stack
 	// frames to match, e.g. TDebuTelesa::receiveMessage.
-	// TODO: MapEventSink callers moved from exact to frame-only
-	// mismatches with this shape (TMapEventSinkBianco::control/watch,
-	// startControl wants 4 more bytes); whoever matches that TU should
-	// re-arbitrate this inline against all its callers.
+	// Callers that ignore the handle differ in how they spell the
+	// receiver: SMSGetMSound()-> costs two more stack words than
+	// gpMSound-> (TMapEventSink::control needs the latter).
 	JAISound* startSoundActor(u32 param_1, const Vec* param_2, u32 param_3,
 	                          JAISound** param_4, u32 param_5, u8 param_6)
 	{

@@ -39,6 +39,9 @@ public:
 		return *this;
 	}
 
+	// fabricated
+	s16 getUnk2C() const { return unk2C; }
+
 	/* 0x0 */ JGeometry::TVec3<f32> mPosition;
 	/* 0xC */ JGeometry::TVec3<f32> mTarget;
 	/* 0x18 */ JGeometry::TVec3<f32> unk18;
@@ -107,6 +110,7 @@ public:
 
 	// Fabricated
 	s16 getUnk2C8() const { return unk2C8; }
+	int getMode() const { return mMode; }
 	MtxPtr getUnk1EC() { return unk1EC; }
 	const JGeometry::TVec3<f32>& getUnk124() const { return unk124; }
 	s16 getUnk258() const { return unk258; }

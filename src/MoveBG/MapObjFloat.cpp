@@ -80,7 +80,7 @@ void TMapObjFloatOnSea::initMapObj()
 
 	TLeanBlock::initMapObj();
 
-	for (idx = 0; strcmp(param_table[idx].unk0, unkF4); ++idx)
+	for (idx = 0; strcmp(param_table[idx].unk0, getUnkF4()); ++idx)
 		;
 
 	unk140 = param_table[idx].unk4;
