@@ -259,7 +259,16 @@ int TBathtubKillerManager::countActiveKillers()
 	return result;
 }
 
-int TBathtubKillerManager::countActiveShineKillers() { return 0; }
+int TBathtubKillerManager::countActiveShineKillers()
+{
+	int result = 0;
+	for (int i = 0; i < getActiveObjNum(); ++i) {
+		TBathtubKiller* killer = (TBathtubKiller*)getObj(i);
+		if (!killer->checkLiveFlag(LIVE_FLAG_DEAD) && killer->unk194 == 1)
+			++result;
+	}
+	return result;
+}
 
 void TBathtubKillerManager::createModelData()
 {
