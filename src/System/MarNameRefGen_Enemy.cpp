@@ -1,4 +1,5 @@
 #include <System/MarNameRefGen.hpp>
+#include <Enemy/EggGen.hpp>
 #include <Enemy/EffectObj.hpp>
 #include <Enemy/EnemyManager.hpp>
 #include <Enemy/Gesso.hpp>
@@ -115,17 +116,14 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 	// if ( strcmp(name, "ButterflyManager") == 0)
 	//     return new TButterfloidManager;
 
-	// TODO:
-	// if ( strcmp(name, "EggGenerator") == 0)
-	//     return new TEggGenerator;
+	if (strcmp(name, "EggGenerator") == 0)
+		return new TEggGenerator("タマゴジェネレータ");
 
-	// TODO:
-	// if ( strcmp(name, "WickedEggGenerator") == 0)
-	//     return new TEggGenerator;
+	if (strcmp(name, "WickedEggGenerator") == 0)
+		return new TEggGenerator("タマゴジェネレータ");
 
-	// TODO:
-	// if ( strcmp(name, "EggGenManager") == 0)
-	//     return new TEggGenManager;
+	if (strcmp(name, "EggGenManager") == 0)
+		return new TEggGenManager("タマゴジェネレータマネージャ");
 
 	if (strcmp(name, "EffectColumWaterManager") == 0)
 		return new TEffectColumWaterManager;
