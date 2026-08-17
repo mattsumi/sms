@@ -51,7 +51,8 @@ BOOL TMario::checkPumpEnable()
 	    && mUpperState != UPPER_STATE_UNK3
 	    && mUpperState != UPPER_STATE_HOLDING_OBJECT
 	    && (mStatus != MARIO_STATUS_ROCKET_LANDING
-	        || !mWaterGun->checkCurrentNozzleRocketType(TWaterGun::Rocket))
+	        || mWaterGun->getEmitParams().mRocketType.get()
+	               != TWaterGun::Rocket)
 	    && (!mWaterGun->checkCurrentNozzleKind(TWaterGun::Rocket)
 	        || !mWaterGun->checkCurrentNozzleTriggerSprayState(
 	            TNozzleTrigger::DEAD))
@@ -71,7 +72,7 @@ void TMario::stateMachineUpper()
 	switch (mUpperState) {
 	case UPPER_STATE_PUMPING:
 		if (!checkPumpEnable()) {
-			mModel->unkC[1].setFrame(0.0f);
+			mModel->getFrameCtrl(1).setFrame(0.0f);
 			mUpperState = UPPER_STATE_IDLE;
 		}
 		if (unk108->mAnalogR == 0.0f) {
@@ -79,41 +80,21 @@ void TMario::stateMachineUpper()
 			mPumpCooldown = mUpperBodyParams.mPumpWaitTime.get();
 		}
 		if (!checkFlag(MARIO_FLAG_IN_ANY_WATER) && mWaterGun != nullptr) {
-			s32 flag;
-			if (mWaterGun->mCurrentWater == 0) {
-				flag = 0;
-			} else {
-				TWaterGun const* waterGun = mWaterGun;
-				if (waterGun->checkCurrentNozzleKind(1)) {
-					if (waterGun->checkCurrentNozzleTriggerSprayState(1)) {
-						flag = 1;
-					} else {
-						flag = 0;
-					}
-				} else {
-					if (waterGun->getCurrentNozzle()->unk378 > 0.0f) {
-						flag = 1;
-					} else {
-						flag = 0;
-					}
-				}
-			}
-
-			if (flag != 0) {
+			bool isEmitting = mWaterGun->isEmitting();
+			if (isEmitting)
 				emitSweatSometimes();
-			}
 		}
 		break;
 
 	case UPPER_STATE_HOLDING_PUMP:
 		if (!checkPumpEnable()) {
-			mModel->unkC[1].setFrame(0.0f);
+			mModel->getFrameCtrl(1).setFrame(0.0f);
 			mUpperState = UPPER_STATE_IDLE;
 		}
 		if (mPumpCooldown != 0) {
 			mPumpCooldown -= 1;
 		} else {
-			mModel->unkC[1].setFrame(0.0f);
+			mModel->getFrameCtrl(1).setFrame(0.0f);
 			mUpperState = UPPER_STATE_IDLE;
 		}
 		checkPumping();
@@ -123,7 +104,7 @@ void TMario::stateMachineUpper()
 		if (mStatus == MARIO_STATUS_PUTTING)
 			mUpperState = UPPER_STATE_IDLE;
 
-		if (mHeldObject == nullptr)
+		if (getHeldObject() == nullptr)
 			mUpperState = UPPER_STATE_IDLE;
 
 		if (mStatus == MARIO_STATUS_RUN && mForwardVel > 20.0f)
@@ -131,7 +112,9 @@ void TMario::stateMachineUpper()
 		break;
 
 	case UPPER_STATE_FIXED_ANIMATION:
-		if (mModel->someAnimationCompleted())
+		if (mModel->getFrameCtrl(1).checkState(
+		        J3DFrameCtrl::STATE_COMPLETED_ONCE
+		        | J3DFrameCtrl::STATE_LOOPED_ONCE))
 			mUpperState = UPPER_STATE_IDLE;
 		break;
 
