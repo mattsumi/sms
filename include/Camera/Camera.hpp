@@ -272,7 +272,8 @@ private:
 	void setUpFromLButtonCamera_();
 	void changeCamMode_(int mode)
 	{
-		changeCamModeSpecifyFrame_(mode, getCameraInbetweenFrame_(mode));
+		int frame = getCameraInbetweenFrame_(mode);
+		changeCamModeSpecifyFrame_(mode, frame);
 	}
 	void changeCamModeSub_(int mode, int tween_frames, bool force);
 	void changeCamModeSpecifyFrame_(int mode, int tween_frames);

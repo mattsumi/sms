@@ -365,7 +365,11 @@ bool TMapEventSinkBianco::watch()
 
 void TMapEventSinkBianco::loadAfter()
 {
-	TMapEventSinkInPollutionReset::loadAfter();
+	TMapEventSinkInPollution::loadAfter();
+	for (int i = 0; i < mBuildingNum; ++i) {
+		getPollutionObj(i)->alive();
+		getResetPollutionObj(i)->kill();
+	}
 
 	TMapStaticObj* ref = JDrama::TNameRefGen::search<TMapStaticObj>("鏡内地形");
 	unk64              = ref->getModelData()->getJointNodePointer(2);

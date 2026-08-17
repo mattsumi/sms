@@ -12,7 +12,7 @@ public:
 	f32 checkPlaneGround(f32 x, f32 y, f32 z, const TBGCheckData**);
 	TBGCheckData* getCheckData(int x, int z, int which) const;
 
-	f32 gridToWorld(f32 v) { return v * mScale - mExtent; }
+	f32 gridToWorld(int v) { return v * mScale - mExtent; }
 	f32 worldToGrid(f32 v) { return mOneOverScale * (v + mExtent); }
 
 public:

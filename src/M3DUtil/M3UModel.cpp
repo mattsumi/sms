@@ -43,17 +43,17 @@ void M3UModel::updateInMotion()
 	// volatile u32 padding[12];
 	for (int i = 0; i < unk10; i++) {
 		M3UMtxCalcSetInfo& info   = unk14[i];
+		J3DFrameCtrl& frameCtrl   = unkC[info.mFrameCalcIdx];
 		J3DAnmTransform* anmTrans = unk4->unk4[info.mAnmTransformIdx];
-		J3DFrameCtrl& frameCtrl   = getFrameCtrl(info.mFrameCalcIdx);
 		frameCtrl.update();
 
-		J3DJoint* jnt = unk8->mModelData->getJointNodePointer(info.mJntIdx);
+		J3DJoint* jnt
+		    = getModel()->getModelData()->getJointNodePointer(info.mJntIdx);
 		if (info.mMtxCalcIdx == 0xff) {
 			jnt->setMtxCalc(nullptr);
 			continue;
 		}
-		f32 currentFrame = frameCtrl.getFrame();
-		anmTrans->setFrame(currentFrame);
+		anmTrans->setFrame(frameCtrl.getFrame());
 
 		// Possibly inlined? Feels like it fits more in M3UModelCommon
 		switch (info.mAnmType) {

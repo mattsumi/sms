@@ -56,8 +56,8 @@ void TMewManager::load(JSUMemoryInputStream& stream)
 void TMewManager::loadAfter()
 {
 	TAnimalManagerBase::loadAfter();
-	MSoundSESystem::MSRandPlay::createRandPlayVec(MSD_SE_OBJ_KAMOME_SOLO,
-	                                              mObjNum);
+	u16 num = getObjNum();
+	MSoundSESystem::MSRandPlay::createRandPlayVec(MSD_SE_OBJ_KAMOME_SOLO, num);
 }
 
 void TMewManager::createModelData()

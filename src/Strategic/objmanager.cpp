@@ -41,6 +41,12 @@ TObjManager::TObjManager(const char* name)
 {
 }
 
+void TObjManager::initObjArray(int count)
+{
+	mCapacity = count;
+	unk18     = new THitActor*[mCapacity];
+}
+
 void TObjManager::manageObj(THitActor* obj)
 {
 	unk18[mObjNum] = obj;
