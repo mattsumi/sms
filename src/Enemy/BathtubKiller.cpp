@@ -170,7 +170,11 @@ f32 TBathtubKiller::getBathtubY() { return 0.0f; }
 
 void TBathtubKiller::makeInitialVelocity(JGeometry::TVec3<f32>) { }
 
-void TBathtubKiller::moveParabolic() { }
+void TBathtubKiller::moveParabolic()
+{
+	unk1BC.set(0.0f, -getGravityY(), 0.0f);
+	makeQuat(mVelocity, 1.0f, 0.1f);
+}
 
 void TBathtubKiller::moveChasing() { }
 
