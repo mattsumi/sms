@@ -22,8 +22,8 @@ void TSpider::bind(TLiveActor* param_1)
 	f32 linearVelocityY             = local_114.y;
 	local_50.x += local_114.x;
 	local_50.y += linearVelocityY;
+	local_50.z += local_114.z;
 	f32 linearVelocityZ = local_114.z;
-	local_50.z += linearVelocityZ;
 
 	if (param_1->isAirborne()) {
 		JGeometry::TVec3<f32> local_5C = param_1->mVelocity;
@@ -87,7 +87,7 @@ void TSpider::bind(TLiveActor* param_1)
 	JGeometry::TVec3<f32> local_bc;
 	f32 unaff_f29;
 
-	bool b   = gpMap->isTouchedWallsAndMoveXZ(&local_90);
+	BOOL b   = gpMap->isTouchedWallsAndMoveXZ(&local_90);
 	local_bc = local_90.mCenter;
 	if (!b) {
 		if (unk8 > 0) {
