@@ -21,6 +21,7 @@
 #include <Enemy/Kumokun.hpp>
 #include <Animal/AnimalBase.hpp>
 #include <Animal/AnimalManager.hpp>
+#include <Animal/Butterfly.hpp>
 #include <Animal/fishoid.hpp>
 
 JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
@@ -100,21 +101,17 @@ JDrama::TNameRef* TMarNameRefGen::getNameRef_Enemy(const char* name) const
 	// if ( strcmp(name, "BeeHiveManager") == 0)
 	//     return new TBeeHiveManager;
 
-	// TODO:
-	// if ( strcmp(name, "Butterfly") == 0)
-	//     return new TButterfloid;
+	if (strcmp(name, "Butterfly") == 0)
+		return new TButterfloid(0, "蝶Ａ");
 
-	// TODO:
-	// if ( strcmp(name, "ButterflyB") == 0)
-	//     return new TButterfloid;
+	if (strcmp(name, "ButterflyB") == 0)
+		return new TButterfloid(1, "蝶Ｂ");
 
-	// TODO:
-	// if ( strcmp(name, "ButterflyC") == 0)
-	//     return new TButterfloid;
+	if (strcmp(name, "ButterflyC") == 0)
+		return new TButterfloid(2, "蝶Ｃ");
 
-	// TODO:
-	// if ( strcmp(name, "ButterflyManager") == 0)
-	//     return new TButterfloidManager;
+	if (strcmp(name, "ButterflyManager") == 0)
+		return new TButterfloidManager("");
 
 	if (strcmp(name, "EggGenerator") == 0)
 		return new TEggGenerator("タマゴジェネレータ");
