@@ -23,7 +23,18 @@ void TMapWarp::changeModel(int i)
 	unk8 = i;
 }
 
-void TMapWarp::warp(int) { }
+void TMapWarp::warp(int i)
+{
+	int warp = unk4[i].unk0;
+	if (unk8 != warp) {
+		gpMap->getModelManager()->getJointModel(0)->getChild(unk8)->sleep();
+		gpMap->getModelManager()->getJointModel(0)->getChild(warp)->awake();
+		unk8 = unk4[i].unk0;
+
+		JGeometry::TVec3<f32> marioPos = SMS_GetMarioPos() + unk4[i].unk8;
+		SMS_MarioWarpRequest(marioPos, (*gpMarioAngleY * 180.0f) / 32768.0f);
+	}
+}
 
 void TMapWarp::watchToWarp()
 {
@@ -31,20 +42,8 @@ void TMapWarp::watchToWarp()
 	f32 fVar8 = gpMap->checkGroundExactY(gpMarioPos->x, gpMarioPos->y + 30.0f,
 	                                     gpMarioPos->z, &checkData);
 
-	if (checkData->isWarp()) {
-		int warp = unk4[checkData->getData()].unk0;
-		if (warp != unk8) {
-			gpMap->getModelManager()->getJointModel(0)->getChild(unk8)->sleep();
-			gpMap->getModelManager()->getJointModel(0)->getChild(warp)->awake();
-			unk8 = warp;
-
-			// TODO: inlines
-			JGeometry::TVec3<f32> marioPos = SMS_GetMarioPos();
-			marioPos += unk4[checkData->getData()].unk8;
-			SMS_MarioWarpRequest(marioPos,
-			                     (*gpMarioAngleY * 180.0f) / 32768.0f);
-		}
-	}
+	if (checkData->isWarp())
+		warp(checkData->getData());
 
 	if (checkData->isMapChange()) {
 		if (checkData->getData() != unk8) {
