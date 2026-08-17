@@ -309,7 +309,19 @@ DEFINE_NERVE(TNerveBathtubKillerChase, TLiveActor) { return FALSE; }
 
 DEFINE_NERVE(TNerveBathtubKillerChaseStraight, TLiveActor) { return FALSE; }
 
-DEFINE_NERVE(TNerveBathtubKillerStraight, TLiveActor) { return FALSE; }
+DEFINE_NERVE(TNerveBathtubKillerStraight, TLiveActor)
+{
+	TBathtubKiller* self = (TBathtubKiller*)spine->getBody();
+
+	if (spine->getTime() == 0)
+		self->setStraightBathtubKillerAnm();
+
+	if (self->unk218 <= 0)
+		self->offHitFlag(HIT_FLAG_NO_COLLISION);
+
+	self->moveStraight();
+	return false;
+}
 
 DEFINE_NERVE(TNerveBathtubKillerBreak, TLiveActor) { return FALSE; }
 
