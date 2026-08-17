@@ -1,5 +1,6 @@
 #include <Enemy/BathtubKiller.hpp>
 #include <Strategic/ObjModel.hpp>
+#include <JSystem/J3D/J3DGraphAnimator/J3DModel.hpp>
 
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
@@ -194,7 +195,13 @@ f32 TBathtubKiller::getGravityY() const
 	return getSaveParam2()->mSLFlyingGravityY.get();
 }
 
-void TBathtubKiller::calcRootMatrix() { }
+void TBathtubKiller::calcRootMatrix()
+{
+	TPosition3f mtx;
+	mtx.setQT(mQuat, mPosition);
+	getModel()->setBaseScale(mScaling);
+	getModel()->setBaseTRMtx(mtx);
+}
 
 BOOL TBathtubKiller::receiveMessage(THitActor*, u32) { return false; }
 
