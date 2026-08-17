@@ -45,17 +45,8 @@ void TMapWarp::watchToWarp()
 	if (checkData->isWarp())
 		warp(checkData->getData());
 
-	if (checkData->isMapChange()) {
-		if (checkData->getData() != unk8) {
-			gpMap->getModelManager()->getJointModel(0)->getChild(unk8)->sleep();
-			gpMap->getModelManager()
-			    ->getJointModel(0)
-			    ->getChild(checkData->getData())
-			    ->awake();
-
-			unk8 = checkData->getData();
-		}
-	}
+	if (checkData->isMapChange())
+		changeModel(checkData->getData());
 
 	int no = gpCubeStream->getInCubeNo(SMS_GetMarioPos());
 	if (no == -1)
@@ -66,7 +57,8 @@ void TMapWarp::watchToWarp()
 	MsMtxSetXYZRPH(mtx, 0.0f, 0.0f, 0.0f, info.unk18.x, info.unk18.y,
 	               info.unk18.z);
 
-	JGeometry::TVec3<f32> vec2(0.0f, 0.0f, info.unk40 * 0.01f);
+	JGeometry::TVec3<f32> vec2(0.0f, 0.0f, 0.0f);
+	vec2.z = info.unk40 * 0.01f;
 	MTXMultVec(mtx, &vec2, &vec2);
 	if ((info.unk38 == 0 ? true : false) || (info.unk38 == 1 ? true : false))
 		SMS_FlowMoveMario(vec2);
