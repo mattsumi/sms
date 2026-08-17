@@ -4,6 +4,8 @@
 #include <MSound/MSound.hpp>
 #include <Strategic/ObjModel.hpp>
 
+static TRollEnemy* gpCurRollEnemy;
+
 void TRollEnemy::attackToMario()
 {
 	SMS_SendMessageToMario(this, HIT_MESSAGE_ATTACK);
@@ -38,6 +40,12 @@ void TIgaiga::setMActorAndKeeper()
 void TIgaiga::perform(u32 cue, JDrama::TGraphics* graphics)
 {
 	TSmallEnemy::perform(cue, graphics);
+}
+
+void TIgaiga::calcRootMatrix()
+{
+	gpCurRollEnemy = this;
+	TSpineEnemy::calcRootMatrix();
 }
 
 void TIgaiga::rollSE()
