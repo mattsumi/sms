@@ -114,7 +114,10 @@ void MSSeCallBack::setWaterCameraFir(bool enabled)
 		smWaterFilter = 0;
 }
 
-void MSSeCallBack::setWaterFilter(u16 param_1) { }
+void MSSeCallBack::setWaterFilter(u16 param_1)
+{
+	smWaterFilter = param_1 > 0x78 ? 0x78 : param_1;
+}
 
 u16 MSSeCallBack::setParameterSeqSync(JASystem::TTrack* param_1, u16 param_2)
 {
