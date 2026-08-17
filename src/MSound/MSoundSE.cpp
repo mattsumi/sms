@@ -49,10 +49,10 @@ u32 MSRandVol::getRandomVolume(u32 param_1, u32 param_2) { }
 
 f32 MSRandVol::getRandVol(u32 param_1)
 {
-	f32 d = JALCalc::getRandom(unk3C[param_1 >> 24 & 0xC] * unk18,
-	                           unk2C[param_1 >> 22 & 0xC],
-	                           unk1C[param_1 >> 20 & 0xC])
-	        + 1.0f;
+	f32 d
+	    = JALCalc::getRandom(unk3C[param_1 >> 26 & 3] * unk18,
+	                         unk2C[param_1 >> 24 & 3], unk1C[param_1 >> 22 & 3])
+	      + 1.0f;
 
 	if (d < 0.0f)
 		return 0.0f;
