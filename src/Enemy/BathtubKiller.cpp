@@ -160,9 +160,9 @@ void TBathtubKiller::moveChasing() { }
 
 void TBathtubKiller::moveStraight() { }
 
-void TBathtubKiller::makeVelocityQuat() { }
+void TBathtubKiller::makeVelocityQuat() { makeQuat(mVelocity, unk198, 0.1f); }
 
-void TBathtubKiller::makeAccelerationQuat() { }
+void TBathtubKiller::makeAccelerationQuat() { makeQuat(unk1BC, unk198, 0.1f); }
 
 void TBathtubKiller::makeQuat(JGeometry::TVec3<f32> axis, f32 moveAmountY,
                               f32 moveAmountX)
