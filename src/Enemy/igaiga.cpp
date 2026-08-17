@@ -4,6 +4,16 @@
 #include <MSound/MSound.hpp>
 #include <Strategic/ObjModel.hpp>
 
+static const char* igaiga_bastable[] = {
+	"/scene/igaiga/bas/igaiga_down1.bas",
+	"/scene/igaiga/bas/igaiga_down2.bas",
+	nullptr,
+	nullptr,
+	"/scene/igaiga/bas/igaiga_shoot1.bas",
+	"/scene/igaiga/bas/igaiga_waterdown1.bas",
+	"/scene/igaiga/bas/igaiga_waterhit1.bas",
+	nullptr,
+};
 static TRollEnemy* gpCurRollEnemy;
 
 void TRollEnemy::attackToMario()
@@ -63,3 +73,5 @@ void TIgaiga::boundSE()
 }
 
 void TIgaiga::setWalkAnm() { setBckAnm(3); }
+
+const char** TIgaiga::getBasNameTable() const { return igaiga_bastable; }
