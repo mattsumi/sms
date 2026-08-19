@@ -208,11 +208,11 @@ void TBathtubKiller::resetBathtubKiller()
 {
 	mSpine->initWith(&TNerveBathtubKillerWander::theNerve());
 	onLiveFlag(LIVE_FLAG_AIRBORNE);
-	unk208 = 0;
-	unk20C = 0;
-	unk210 = 0;
-	unk214 = 0;
-	unk218 = 0;
+	unk208[0] = 0;
+	unk208[1] = 0;
+	unk208[2] = 0;
+	unk208[3] = 0;
+	unk208[4] = 0;
 	mQuat.set(0.0f, 0.0f, 0.0f, 1.0f);
 	mVelocity.set(0.0f, 0.0f, 0.0f);
 	unk1BC.set(0.0f, 0.0f, 0.0f);
@@ -243,13 +243,13 @@ void TBathtubKiller::resetBathtubKiller()
 			mPersonality.makeNormal(getSaveParam2());
 	}
 
-	unk1FC = 0.0f;
-	unk1F8 = getSaveParam2()->mSLColorChangeRateDelta.get();
-	unk208 = mPersonality.mDeadPeriod;
-	unk20C = getSaveParam2()->mSLLaunchingPeriod.get();
-	unk214 = getSaveParam2()->noCollisionAmongKillers.get();
-	unk200 = getSaveParam2()->mSLChaseMinY.get();
-	unk204 = getSaveParam2()->mSLChaseMaxY.get();
+	unk1FC    = 0.0f;
+	unk1F8    = getSaveParam2()->mSLColorChangeRateDelta.get();
+	unk208[0] = mPersonality.mDeadPeriod;
+	unk208[1] = getSaveParam2()->mSLLaunchingPeriod.get();
+	unk208[3] = getSaveParam2()->noCollisionAmongKillers.get();
+	unk200    = getSaveParam2()->mSLChaseMinY.get();
+	unk204    = getSaveParam2()->mSLChaseMaxY.get();
 
 	if (unk194 == 2) {
 		int choice    = MsRandF() * 4.0f;
@@ -377,7 +377,7 @@ void TBathtubKiller::perform(u32 cue, JDrama::TGraphics* graphics)
 
 	if ((cue & CUE_MOVE) && !checkLiveFlag(LIVE_FLAG_DEAD)) {
 		updateTimers();
-		if (unk208 <= 0) {
+		if (unk208[0] <= 0) {
 			bool inactive = mSpine->getCurrentNerve()
 			                    == &TNerveBathtubKillerExplosion::theNerve()
 			                || mSpine->getCurrentNerve()
@@ -518,7 +518,7 @@ void TBathtubKiller::makeQuat(JGeometry::TVec3<f32> axis, f32 moveAmountY,
 
 	JGeometry::TQuat4<f32> steer;
 	steer.setRotate(forward, normAxis, moveAmountY);
-	mQuat.mul(steer);
+	mQuat.mul(steer, mQuat);
 
 	// Y-axis rotation
 	JGeometry::TVec3<f32> right;
@@ -533,7 +533,7 @@ void TBathtubKiller::makeQuat(JGeometry::TVec3<f32> axis, f32 moveAmountY,
 		tiltQuat.rotate(forward, curUp);
 
 		steer.setRotate(up, curUp, moveAmountX);
-		mQuat.mul(steer);
+		mQuat.mul(steer, mQuat);
 	}
 
 	mQuat.normalize();
@@ -638,7 +638,7 @@ bool TBathtubKiller::isCollidMove(THitActor* actor)
 		return true;
 	}
 
-	if (actor->isActorType(0x08000024) && unk214 <= 0) {
+	if (actor->isActorType(0x08000024) && unk208[3] <= 0) {
 		bool inactive = mSpine->getCurrentNerve()
 		                    == &TNerveBathtubKillerExplosion::theNerve()
 		                || mSpine->getCurrentNerve()
@@ -697,16 +697,10 @@ void TBathtubKiller::setDeadBathtubKillerAnm()
 
 void TBathtubKiller::updateTimers()
 {
-	if (unk208 > 0)
-		unk208--;
-	if (unk20C > 0)
-		unk20C--;
-	if (unk210 > 0)
-		unk210--;
-	if (unk214 > 0)
-		unk214--;
-	if (unk218 > 0)
-		unk218--;
+	for (int i = 0; i < 5; ++i) {
+		if (unk208[i] > 0)
+			unk208[i]--;
+	}
 }
 
 bool TBathtubKiller::isAttackable()
@@ -761,7 +755,7 @@ bool TBathtubKiller::isAboided()
 		return false;
 
 	if (SMS_GetMarioStatus() == MARIO_STATUS_HANGING) {
-		unk218 = 240;
+		unk208[4] = 240;
 		onHitFlag(HIT_FLAG_NO_COLLISION);
 		return true;
 	}
@@ -782,7 +776,7 @@ bool TBathtubKiller::isAboided()
 
 bool TBathtubKiller::canChase()
 {
-	if (unk20C > 0)
+	if (unk208[1] > 0)
 		return false;
 
 	f32 chaseDistance = getSaveParam2()->mSLChaseDistanceY.get();
@@ -853,7 +847,7 @@ DEFINE_NERVE(TNerveBathtubKillerChaseStraight, TLiveActor)
 
 	if (spine->getTime() == 0) {
 		self->setStraightBathtubKillerAnm();
-		self->unk210 = self->getSaveParam2()->mSLChaseStraightPeriod.get();
+		self->unk208[2] = self->getSaveParam2()->mSLChaseStraightPeriod.get();
 	}
 
 	if (!self->isAttackable()) {
@@ -861,10 +855,10 @@ DEFINE_NERVE(TNerveBathtubKillerChaseStraight, TLiveActor)
 		return true;
 	}
 
-	if (self->unk218 <= 0)
+	if (self->unk208[4] <= 0)
 		self->offHitFlag(HIT_FLAG_NO_COLLISION);
 
-	if (self->unk210 <= 0) {
+	if (self->unk208[2] <= 0) {
 		spine->pushAfterCurrent(&TNerveBathtubKillerChase::theNerve());
 		return true;
 	}
@@ -880,7 +874,7 @@ DEFINE_NERVE(TNerveBathtubKillerStraight, TLiveActor)
 	if (spine->getTime() == 0)
 		self->setStraightBathtubKillerAnm();
 
-	if (self->unk218 <= 0)
+	if (self->unk208[4] <= 0)
 		self->offHitFlag(HIT_FLAG_NO_COLLISION);
 
 	self->moveStraight();
