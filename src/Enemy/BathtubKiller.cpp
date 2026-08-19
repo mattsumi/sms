@@ -1,9 +1,17 @@
 #include <Enemy/BathtubKiller.hpp>
 #include <Enemy/Conductor.hpp>
 #include <Enemy/EffectObj.hpp>
+#include <MoveBG/ItemManager.hpp>
+#include <MoveBG/MapObjCorona.hpp>
+#include <Player/MarioAccess.hpp>
+#include <Player/WaterGun.hpp>
 #include <Strategic/ObjModel.hpp>
 #include <Strategic/Spine.hpp>
+#include <System/EmitterViewObj.hpp>
+#include <System/FlagManager.hpp>
+#include <System/Particles.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DModel.hpp>
+#include <JSystem/JParticle/JPAEmitter.hpp>
 
 // rogue includes needed for matching sinit & bss
 #include <MSound/MSSetSound.hpp>
@@ -134,7 +142,43 @@ void TBathtubKiller::reset()
 
 void TBathtubKiller::resetBathtubKiller() { }
 
-void TBathtubKiller::generateItemBathtubKiller() { }
+void TBathtubKiller::generateItemBathtubKiller()
+{
+	if (unk194 != 1)
+		return;
+
+	TMapObjBase* item              = nullptr;
+	TFlagManager* flagManager      = TFlagManager::smInstance;
+	TBathtubKillerManager* manager = (TBathtubKillerManager*)mManager;
+	s32 flag                       = flagManager->getFlag(0x20001);
+
+	if (SMS_GetMarioWaterGun()->mCurrentWater == 0) {
+		item = gpItemManager->makeObjAppear(mPosition.x, mPosition.y,
+		                                    mPosition.z, 0x20000002, true);
+	} else if (manager->unk60 == flag && manager->unk69 < 7) {
+		manager->generateMushroom(mPosition);
+		manager->unk69++;
+	} else if (flag <= manager->unk60 + 1 && unk1CC->getNumGripsDead() == 3
+	           && manager->unk68 == 0) {
+		manager->generateMushroom(mPosition);
+		manager->unk68 = 1;
+	}
+
+	if (item == nullptr)
+		item = gpItemManager->makeObjAppear(mPosition.x, mPosition.y,
+		                                    mPosition.z, 0x20000002, true);
+
+	if (item != nullptr && item->mActorType == 0x20000002) {
+		JPABaseEmitter* emitter = gpMarioParticleManager->emit(
+		    PARTICLE_MS_ENM_DISAP_A_W, &item->mPosition, 0, nullptr);
+		if (emitter != nullptr)
+			emitter->setScale(item->mScaling);
+		emitter = gpMarioParticleManager->emit(PARTICLE_MS_ENM_DISAP_B,
+		                                       &item->mPosition, 0, nullptr);
+		if (emitter != nullptr)
+			emitter->setScale(item->mScaling);
+	}
+}
 
 void TBathtubKiller::killBathtubKiller()
 {
@@ -143,9 +187,19 @@ void TBathtubKiller::killBathtubKiller()
 	stopAnmSound();
 }
 
-void TBathtubKiller::breakBathtubKiller() { }
+void TBathtubKiller::breakBathtubKiller()
+{
+	setDeadBathtubKillerAnm();
+	generateItemBathtubKiller();
+	onHitFlag(HIT_FLAG_NO_COLLISION);
+}
 
-void TBathtubKiller::explodeBathtubKiller() { }
+void TBathtubKiller::explodeBathtubKiller()
+{
+	setDeadBathtubKillerAnm();
+	generateExplosion();
+	onHitFlag(HIT_FLAG_NO_COLLISION);
+}
 
 void TBathtubKiller::bind() { }
 
@@ -246,7 +300,21 @@ void TBathtubKiller::calcRootMatrix()
 
 BOOL TBathtubKiller::receiveMessage(THitActor*, u32) { return false; }
 
-void TBathtubKiller::attackToMario() { }
+void TBathtubKiller::attackToMario()
+{
+	JGeometry::TVec3<f32> throwVelocity;
+	bool inactive
+	    = mSpine->getCurrentNerve() == &TNerveBathtubKillerExplosion::theNerve()
+	      || mSpine->getCurrentNerve() == &TNerveBathtubKillerBreak::theNerve();
+
+	if (!inactive && gpMarioPos->y < mPosition.y) {
+		mSpine->pushNerve(&TNerveBathtubKillerExplosion::theNerve());
+		SMS_SendMessageToMario(this, HIT_MESSAGE_ATTACK);
+		throwVelocity.set(0.0f, 1.0f, 0.0f);
+		SMS_ThrowMario(throwVelocity, 60.0f);
+		unk21C = 1;
+	}
+}
 
 bool TBathtubKiller::isCollidMove(THitActor*) { return false; }
 
@@ -323,17 +391,27 @@ DEFINE_NERVE(TNerveBathtubKillerStraight, TLiveActor)
 	return false;
 }
 
-DEFINE_NERVE(TNerveBathtubKillerBreak, TLiveActor) { return FALSE; }
+DEFINE_NERVE(TNerveBathtubKillerBreak, TLiveActor)
+{
+	TBathtubKiller* self = (TBathtubKiller*)spine->getBody();
+
+	if (spine->getTime() == 0)
+		self->breakBathtubKiller();
+
+	if (self->checkCurAnmEnd(0)) {
+		self->killBathtubKiller();
+		return true;
+	}
+
+	return false;
+}
 
 DEFINE_NERVE(TNerveBathtubKillerExplosion, TLiveActor)
 {
 	TBathtubKiller* self = (TBathtubKiller*)spine->getBody();
 
-	if (spine->getTime() == 0) {
-		self->setDeadBathtubKillerAnm();
-		self->generateExplosion();
-		self->onHitFlag(HIT_FLAG_NO_COLLISION);
-	}
+	if (spine->getTime() == 0)
+		self->explodeBathtubKiller();
 
 	if (self->checkCurAnmEnd(0)) {
 		self->killBathtubKiller();
@@ -348,11 +426,35 @@ TBathtubKillerManager::TBathtubKillerManager(const char* name)
 {
 }
 
-void TBathtubKillerManager::load(JSUMemoryInputStream&) { }
+void TBathtubKillerManager::load(JSUMemoryInputStream& stream)
+{
+	TSmallEnemyManager::load(stream);
+	unk38 = new TBathtubKillerParams("/enemy/bathtubkiller.prm");
+}
 
-void TBathtubKillerManager::loadAfter() { }
+void TBathtubKillerManager::loadAfter()
+{
+	TSmallEnemyManager::loadAfter();
+	TMapObjBaseManager::newAndRegisterObj("mushroom1up");
+	TMapObjBaseManager::newAndRegisterObj("mushroom1up");
+	unk60 = TFlagManager::smInstance->getFlag(0x20001);
+	unk64 = nullptr;
+	unk68 = 0;
+	unk69 = 0;
 
-void TBathtubKillerManager::generateMushroom(JGeometry::TVec3<f32>) { }
+	static const char* loopFilenames[] = {
+		"/scene/map/map/ms_kp_kill_smoke.jpa",
+	};
+	for (int i = 0; i < 1; ++i)
+		SMS_LoadParticle(loopFilenames[i], 0x1bd + i);
+}
+
+void TBathtubKillerManager::generateMushroom(JGeometry::TVec3<f32> pos)
+{
+	if (unk64 == nullptr || unk64->checkLiveFlag(LIVE_FLAG_DEAD))
+		unk64 = gpItemManager->makeObjAppear(pos.x, pos.y, pos.z, 0x20000005,
+		                                     true);
+}
 
 int TBathtubKillerManager::countActiveKillers()
 {
