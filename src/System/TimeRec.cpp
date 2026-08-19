@@ -49,11 +49,6 @@ TTimeRec::TTimeRec(u16 param_1)
 {
 }
 
-// TODO: 99.2% - instructions fully match but curr/address-temp registers are
-// transposed in the loop (target: curr=r5, addr=r7; ours: curr=r7, addr=r5).
-// ~45 source spellings, all opt levels and compiler versions keep our
-// allocation; the target looks linear-scan-allocated. See suppleGXTime for the
-// same loop.
 void TTimeRec::flip()
 {
 	TTimeArray& array = _instance->crTimeAry()[1];
@@ -62,11 +57,11 @@ void TTimeRec::flip()
 		int i    = size - 1;
 		u32 curr = array.mEntries[i].time;
 		while (i > 0) {
-			--i;
-			if (array.mEntries[i].time == 0) {
-				array.mEntries[i].time = curr;
+			TTimeArray::Entry& entry = array.mEntries[--i];
+			if (entry.time == 0) {
+				entry.time = curr;
 			} else {
-				curr = array.mEntries[i].time;
+				curr = entry.time;
 			}
 		}
 	}

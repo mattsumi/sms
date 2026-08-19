@@ -860,7 +860,7 @@ config.libs = [
             Object(Matching, "System/Resolution.cpp"),
             Object(Matching, "System/PositionHolder.cpp"),
             Object(Matching, "System/ProcessMeter.cpp"),
-            Object(NonMatching, "System/TimeRec.cpp"),
+            Object(Matching, "System/TimeRec.cpp"),
             Object(NonMatching, "System/DrawSyncManager.cpp"),
             Object(Matching, "System/THPRender.cpp"),
             Object(NonMatching, "System/MarNameRefGen_BossEnemy.cpp"),
