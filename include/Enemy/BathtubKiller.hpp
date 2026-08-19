@@ -15,6 +15,12 @@ public:
 	void makeFast(const TBathtubKillerParams*);
 	void makeShine(const TBathtubKillerParams*);
 	void makeNormal(const TBathtubKillerParams*);
+
+	f32 mAccelerationQuatRate;
+	f32 mChaseAcceleration;
+	f32 mChaseSpeed;
+	f32 mInitialSpeed;
+	s32 mDeadPeriod;
 };
 
 class TBathtubKillerParams : public TSmallEnemyParams {
@@ -106,11 +112,7 @@ public:
 
 public:
 	/* 0x194 */ u8 unk194;
-	/* 0x198 */ f32 unk198;
-	/* 0x19C */ f32 unk19C;
-	/* 0x1A0 */ f32 unk1A0;
-	/* 0x1A4 */ f32 unk1A4;
-	/* 0x1A8 */ s32 unk1A8;
+	/* 0x198 */ TBathtubKillerPersonality mPersonality;
 	/* 0x1AC */ JGeometry::TQuat4<f32> mQuat;
 	/* 0x1BC */ JGeometry::TVec3<f32> unk1BC;
 	/* 0x1C8 */ char unk1C8[4];
@@ -131,7 +133,7 @@ public:
 	/* 0x214 */ int unk214;
 	/* 0x218 */ int unk218;
 	/* 0x21C */ u32 unk21C;
-	/* 0x220 */ TMtx34f unk220;
+	/* 0x220 */ TPosition3f unk220;
 };
 
 DECLARE_NERVE(TNerveBathtubKillerWander, TLiveActor);
