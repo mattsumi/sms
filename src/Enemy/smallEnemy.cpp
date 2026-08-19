@@ -429,8 +429,8 @@ void TSmallEnemy::setAfterDeadEffect()
 
 void TSmallEnemy::generateItem()
 {
-	f32 rand = TMsRange<f32>(0.0f, 100.0f).rand();
-	(void)rand; // TODO: due to rand being incorrect
+	TMsRange<f32> itemRollRange(0.0f, 100.0f);
+	f32 rand     = itemRollRange.rand();
 	f32 eggRate  = getSaveParams()->mSLGenEggRate.get();
 	f32 itemRate = getSaveParams()->mSLGenItemRate.get();
 	if (rand < eggRate + itemRate && !mGroundPlane->isIllegalData())
