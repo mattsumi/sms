@@ -49,8 +49,8 @@ void TFileLoadBlock::touchPlayer(THitActor* param_1)
 
 BOOL TFileLoadBlock::receiveMessage(THitActor* sender, u32 message)
 {
-	if (isState(STATE_NORMAL) && message == HIT_MESSAGE_PUSH_UP
-	    && !isStateTimerEngaged()) {
+	bool normal = isState(STATE_NORMAL);
+	if (normal && message == HIT_MESSAGE_PUSH_UP && !isStateTimerEngaged()) {
 		pushed();
 		return true;
 	}
