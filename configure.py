@@ -954,7 +954,7 @@ config.libs = [
             Object(NonMatching, "NPC/NpcInitPrg.cpp"),
             Object(Matching, "NPC/NpcInbetween.cpp"),
             Object(NonMatching, "NPC/NpcParts.cpp"),
-            Object(NonMatching, "NPC/NpcColor.cpp"),
+            Object(Matching, "NPC/NpcColor.cpp"),
             Object(Matching, "NPC/NpcSound.cpp"),
             Object(NonMatching, "NPC/NpcChange.cpp"),
             Object(Matching, "NPC/NpcThrow.cpp"),
