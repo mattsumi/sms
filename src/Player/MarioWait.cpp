@@ -576,7 +576,7 @@ BOOL TMario::waitMain()
 	int result = 0;
 
 	checkEnforceJump();
-	checkCollision();
+	checkReturn();
 	setNormalAttackArea();
 	checkPutStart();
 
