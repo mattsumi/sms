@@ -324,8 +324,8 @@ config.libs = [
         "objects": [
             # JSupport
             Object(Matching, "JSystem/JSupport/JSUOutputStream.cpp"),
-            Object(NonMatching, "JSystem/JSupport/JSUInputStream.cpp"),
-            Object(NonMatching, "JSystem/JSupport/JSUList.cpp"),
+            Object(Matching, "JSystem/JSupport/JSUInputStream.cpp"),
+            Object(Matching, "JSystem/JSupport/JSUList.cpp"),
             Object(Matching, "JSystem/JSupport/JSUMemoryStream.cpp"),
             Object(Matching, "JSystem/JSupport/JSUFileStream.cpp"),
 
@@ -336,7 +336,7 @@ config.libs = [
             Object(Matching, "JSystem/JGadget/singlelinklist.cpp"),
 
             # JKernel
-            Object(NonMatching, "JSystem/JKernel/JKRArchivePri.cpp"),
+            Object(Matching, "JSystem/JKernel/JKRArchivePri.cpp"),
             Object(Matching, "JSystem/JKernel/JKRAramArchive.cpp"),
             Object(Matching, "JSystem/JKernel/JKRAramHeap.cpp"),
             Object(Matching, "JSystem/JKernel/JKRAram.cpp"),
@@ -355,18 +355,18 @@ config.libs = [
             Object(Matching, "JSystem/JKernel/JKRStdHeap.cpp"),
             Object(Matching, "JSystem/JKernel/JKRThread.cpp"),
             Object(Matching, "JSystem/JKernel/JKRDvdRipper.cpp"),
-            Object(NonMatching, "JSystem/JKernel/JKRDvdAramRipper.cpp"),
+            Object(Matching, "JSystem/JKernel/JKRDvdAramRipper.cpp"),
             Object(Matching, "JSystem/JKernel/JKRDecomp.cpp"),
             Object(Matching, "JSystem/JKernel/JKRAramBlock.cpp"),
             Object(Matching, "JSystem/JKernel/JKRAramPiece.cpp"),
             Object(Matching, "JSystem/JKernel/JKRAramStream.cpp"),
 
             # JUtility
-            Object(NonMatching, "JSystem/JUtility/JUTException.cpp"),
+            Object(Matching, "JSystem/JUtility/JUTException.cpp"),
             Object(Matching, "JSystem/JUtility/JUTDirectPrint.cpp"),
             Object(Matching, "JSystem/JUtility/JUTDbPrint.cpp"),
             Object(Matching, "JSystem/JUtility/JUTFont.cpp"),
-            Object(NonMatching, "JSystem/JUtility/JUTGamePad.cpp"),
+            Object(Matching, "JSystem/JUtility/JUTGamePad.cpp"),
             Object(Matching, "JSystem/JUtility/JUTNameTab.cpp"),
             Object(Matching, "JSystem/JUtility/JUTPalette.cpp"),
             Object(Matching, "JSystem/JUtility/JUTRect.cpp"),
@@ -376,7 +376,7 @@ config.libs = [
             Object(Matching, "JSystem/JUtility/JUTVideo.cpp"),
             Object(Matching, "JSystem/JUtility/JUTResFont.cpp"),
             Object(Matching, "JSystem/JUtility/JUTRomFont.cpp"),
-            Object(NonMatching, "JSystem/JUtility/JUTConsole.cpp"),
+            Object(Matching, "JSystem/JUtility/JUTConsole.cpp"),
             Object(Matching, "JSystem/JUtility/JUTDirectFile.cpp"),
 
             # JDrama
@@ -481,11 +481,11 @@ config.libs = [
 
             # J2D
             Object(Matching, "JSystem/J2D/J2DPane.cpp"),
-            Object(NonMatching, "JSystem/J2D/J2DPicture.cpp"),
+            Object(Matching, "JSystem/J2D/J2DPicture.cpp"),
             Object(Matching, "JSystem/J2D/J2DPrint.cpp"),
             Object(Matching, "JSystem/J2D/J2DScreen.cpp"),
             Object(Matching, "JSystem/J2D/J2DTextBox.cpp"),
-            Object(NonMatching, "JSystem/J2D/J2DWindow.cpp"),
+            Object(Matching, "JSystem/J2D/J2DWindow.cpp"),
             Object(Matching, "JSystem/J2D/J2DGrafContext.cpp"),
             Object(Matching, "JSystem/J2D/J2DOrthoGraph.cpp"),
 
