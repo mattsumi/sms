@@ -7,10 +7,10 @@
 
 static const char* SMS_NO_MEMORY_MESSAGE = "メモリが足りません\n";
 
-bool CPolarSubCamera::controlByCameraCode_(int* param_1)
+bool CPolarSubCamera::controlByCameraCode_(int* camera_code)
 {
-	bool result = true;
-	*param_1    = -1;
+	bool result  = true;
+	*camera_code = -1;
 	if (SMS_IsMarioOpeningDoor()) {
 		if (getMode() == CAMERA_MODE_DELFINO_B
 		    && gpCameraMario->getFramesSinceMarioStatusChange() == 120) {
@@ -22,10 +22,10 @@ bool CPolarSubCamera::controlByCameraCode_(int* param_1)
 	} else {
 		int count = gpCubeCamera->unk10;
 
-		JGeometry::TVec3<f32> local_24 = SMS_GetMarioPos();
-		local_24.y += 75.0f;
+		JGeometry::TVec3<f32> marioPos = SMS_GetMarioPos();
+		marioPos.y += 75.0f;
 		for (int i = 0; i < count; ++i) {
-			if (gpCubeCamera->isInCube(local_24, i)) {
+			if (gpCubeCamera->isInCube(marioPos, i)) {
 				TCubeGeneralInfo& generalInfo = gpCubeCamera->getInfo(i);
 				TCubeCameraInfo* info = (TCubeCameraInfo*)&generalInfo;
 
@@ -33,9 +33,9 @@ bool CPolarSubCamera::controlByCameraCode_(int* param_1)
 				if (tool) {
 					if (mMode != tool->getCameraMode() || tool != unk70)
 						changeCamModeSpecifyCamMapTool_(tool);
-					*param_1 = tool->getCameraMode();
+					*camera_code = tool->getCameraMode();
 				} else {
-					*param_1 = gpCubeCamera->getDataNo(i);
+					*camera_code = gpCubeCamera->getDataNo(i);
 				}
 
 				return true;

@@ -4,14 +4,14 @@
 #include <JSystem/J3D/J3DGraphAnimator/J3DModel.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DJoint.hpp>
 
-void M3UModelMario::changeMtxCalcSIAnmBQAnmTransform(int param_1, int param_2,
-                                                     u16 param_3)
+void M3UModelMario::changeMtxCalcSIAnmBQAnmTransform(int entry_index, int slot,
+                                                     u16 anm_index)
 {
-	SomeModelMarioStruct& tmp = unk24[param_1];
-	if (tmp.unk4[param_2] != param_3) {
-		tmp.unk4[param_2]  = param_3;
-		J3DFrameCtrl& ctrl = unkC[tmp.unk8];
-		ctrl.init(unk4->unk4[param_3]->getFrameMax());
+	SomeModelMarioStruct& info = unk24[entry_index];
+	if (info.unk4[slot] != anm_index) {
+		info.unk4[slot]    = anm_index;
+		J3DFrameCtrl& ctrl = unkC[info.unk8];
+		ctrl.init(unk4->unk4[anm_index]->getFrameMax());
 	}
 }
 

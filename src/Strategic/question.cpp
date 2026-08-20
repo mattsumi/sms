@@ -8,28 +8,28 @@
 
 TQuestionManager* gpQuestionManager;
 
-void TQuestionManager::load(JSUMemoryInputStream& param_1)
+void TQuestionManager::load(JSUMemoryInputStream& stream)
 {
-	JDrama::TViewObj::load(param_1);
-	unk10           = 0;
-	unk12           = 0;
-	unk14           = 5000.0;
-	ResTIMG* pRVar1 = (ResTIMG*)JKRGetResource("/common/timg/question.bti");
-	unk18           = new JUTTexture(pRVar1);
+	JDrama::TViewObj::load(stream);
+	unk10        = 0;
+	unk12        = 0;
+	unk14        = 5000.0;
+	ResTIMG* img = (ResTIMG*)JKRGetResource("/common/timg/question.bti");
+	unk18        = new JUTTexture(img);
 	unk1C           = new TQuestionRequest[0x20];
 	unk20           = new TDLTexQuad;
 	unk20->createBuffer(0x20);
 	gpQuestionManager = this;
 }
 
-bool TQuestionManager::request(JGeometry::TVec3<f32> param_1, f32 param_2)
+bool TQuestionManager::request(JGeometry::TVec3<f32> pos, f32 size)
 {
 	if (unk12 < 0x20) {
-		f32 dx = gpMarioPos->x - param_1.x;
-		f32 dz = gpMarioPos->z - param_1.z;
+		f32 dx = gpMarioPos->x - pos.x;
+		f32 dz = gpMarioPos->z - pos.z;
 		if (dx * dx + dz * dz < unk14 * unk14) {
-			unk1C[unk12].unk0 = param_1;
-			unk1C[unk12].unkC = param_2;
+			unk1C[unk12].unk0 = pos;
+			unk1C[unk12].unkC = size;
 			++unk12;
 			return true;
 		}
@@ -39,23 +39,23 @@ bool TQuestionManager::request(JGeometry::TVec3<f32> param_1, f32 param_2)
 }
 
 #pragma dont_inline on
-void TQuestionManager::makeDL(JDrama::TGraphics* param_1) const
+void TQuestionManager::makeDL(JDrama::TGraphics* graphics) const
 {
-	MtxPtr viewMtx = param_1->mViewMtx;
+	MtxPtr viewMtx = graphics->mViewMtx;
 
 	for (int i = 0; i < unk12; ++i) {
-		JGeometry::TVec3<f32> v3[4];
-		JGeometry::TVec3<f32> v2;
-		TQuestionRequest& req    = unk1C[i];
-		JGeometry::TVec3<f32> v1 = req.unk0;
-		f32 f                    = req.unkC;
-		v1.y += f;
-		MTXMultVec(viewMtx, &v1, &v2);
-		v3[0].set(v2.x - f, v2.y + f, v2.z + f);
-		v3[1].set(v2.x + f, v2.y + f, v2.z + f);
-		v3[2].set(v2.x + f, v2.y - f, v2.z + f);
-		v3[3].set(v2.x - f, v2.y - f, v2.z + f);
-		unk20->request(v3);
+		JGeometry::TVec3<f32> corners[4];
+		JGeometry::TVec3<f32> viewPos;
+		TQuestionRequest& req     = unk1C[i];
+		JGeometry::TVec3<f32> pos = req.unk0;
+		f32 size                  = req.unkC;
+		pos.y += size;
+		MTXMultVec(viewMtx, &pos, &viewPos);
+		corners[0].set(viewPos.x - size, viewPos.y + size, viewPos.z + size);
+		corners[1].set(viewPos.x + size, viewPos.y + size, viewPos.z + size);
+		corners[2].set(viewPos.x + size, viewPos.y - size, viewPos.z + size);
+		corners[3].set(viewPos.x - size, viewPos.y - size, viewPos.z + size);
+		unk20->request(corners);
 	}
 	unk20->setEnd();
 }

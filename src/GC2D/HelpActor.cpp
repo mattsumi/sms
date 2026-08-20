@@ -17,14 +17,14 @@ THelpActor::THelpActor(const char* name)
 void THelpActor::load(JSUMemoryInputStream& stream)
 {
 	THitActor::load(stream);
-	u32 auStack_c;
-	u32 local_10;
-	stream >> auStack_c;
-	stream >> local_10;
+	u32 dummy;
+	u32 msgIndex;
+	stream >> dummy;
+	stream >> msgIndex;
 	unk6C = stream.readString();
 	initHitActor(0x40000320, 1, -0x80000000, mScaling.x * 100.0f,
 	             mScaling.y * 100.0f, 1.0f, 1.0f);
-	unk68 = local_10 + 0xE0030;
+	unk68 = msgIndex + 0xE0030;
 }
 
 void THelpActor::loadAfter()

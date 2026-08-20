@@ -23,13 +23,13 @@ inline J3DMtxCalcBasicAnm* createThing2()
 
 // UNUSED, no callers survive. Size matches the map (0x198); the body is a
 // guess modeled on setModel and updateIn. TODO: verify if evidence appears
-void MActorAnmBck::changeMtxCalcType(u8 param_1)
+void MActorAnmBck::changeMtxCalcType(u8 calc_type)
 {
-	if (param_1 == unk2A)
+	if (calc_type == unk2A)
 		return;
 	J3DJoint* joint = unk18->getModelData()->getJointNodePointer(unk28);
 	unk24->setFrame(unk4.getFrame());
-	switch (param_1) {
+	switch (calc_type) {
 	case 1:
 		if (unk30 == nullptr)
 			unk30 = createThing();
@@ -44,10 +44,10 @@ void MActorAnmBck::changeMtxCalcType(u8 param_1)
 		break;
 	case 2:
 		if (!unk34) {
-			bool thing = false;
+			bool wasBasic = false;
 			if (unk2A == 0)
-				thing = true;
-			unk34 = new TMotionBlendCtrl(thing);
+				wasBasic = true;
+			unk34 = new TMotionBlendCtrl(wasBasic);
 		}
 		joint->setMtxCalc(unk34->unk8);
 		break;
@@ -55,16 +55,16 @@ void MActorAnmBck::changeMtxCalcType(u8 param_1)
 		joint->setMtxCalc(unk38);
 		break;
 	}
-	unk2A = param_1;
+	unk2A = calc_type;
 }
 
-void MActorAnmBck::initSimpleMotionBlend(int param_1)
+void MActorAnmBck::initSimpleMotionBlend(int duration)
 {
 	if (!unk34) {
-		bool thing = false;
+		bool wasBasic = false;
 		if (unk2A == 0)
-			thing = true;
-		unk34 = new TMotionBlendCtrl(thing, param_1);
+			wasBasic = true;
+		unk34 = new TMotionBlendCtrl(wasBasic, duration);
 	}
 	unk2A = 2;
 }
@@ -72,10 +72,10 @@ void MActorAnmBck::initSimpleMotionBlend(int param_1)
 void MActorAnmBck::initNormalMotionBlend()
 {
 	if (!unk34) {
-		bool thing = false;
+		bool wasBasic = false;
 		if (unk2A == 0)
-			thing = true;
-		unk34 = new TMotionBlendCtrl(thing);
+			wasBasic = true;
+		unk34 = new TMotionBlendCtrl(wasBasic);
 	}
 	unk2A = 2;
 }
@@ -88,10 +88,10 @@ float MActorAnmBck::getMotionBlendRatio() const
 		return unk34->getMotionBlendRatio();
 }
 
-void MActorAnmBck::setMotionBlendRatio(float param_1)
+void MActorAnmBck::setMotionBlendRatio(float ratio)
 {
 	if (unk34)
-		unk34->setMotionBlendRatio(param_1);
+		unk34->setMotionBlendRatio(ratio);
 }
 
 J3DAnmTransform* MActorAnmBck::getOldMotionBlendAnmPtr() const
@@ -102,10 +102,10 @@ J3DAnmTransform* MActorAnmBck::getOldMotionBlendAnmPtr() const
 		return unk34->getOldMotionBlendAnmPtr();
 }
 
-void MActorAnmBck::setOldMotionBlendAnmPtr(J3DAnmTransform* param_1)
+void MActorAnmBck::setOldMotionBlendAnmPtr(J3DAnmTransform* anm)
 {
 	if (unk34)
-		unk34->setOldMotionBlendAnmPtr(param_1);
+		unk34->setOldMotionBlendAnmPtr(anm);
 }
 
 float MActorAnmBck::getOldMotionBlendFrame() const
@@ -116,14 +116,14 @@ float MActorAnmBck::getOldMotionBlendFrame() const
 		return 0.0f;
 }
 
-void MActorAnmBck::setModel(J3DModel* param_1)
+void MActorAnmBck::setModel(J3DModel* model)
 {
-	u8 thing = 0;
-	unk18    = param_1;
-	if (param_1->getModelData()->unkC & 1)
-		thing = 1;
-	unk2A = thing;
-	switch (thing) {
+	u8 calcType = 0;
+	unk18       = model;
+	if (model->getModelData()->unkC & 1)
+		calcType = 1;
+	unk2A = calcType;
+	switch (calcType) {
 	case 1:
 		if (unk30 == nullptr)
 			unk30 = createThing();
@@ -163,12 +163,12 @@ void MActorAnmBck::updateOut()
 	unk18->getModelData()->getJointNodePointer(unk28)->setMtxCalc(nullptr);
 }
 
-void MActorAnmBck::setAnmFromIndex(int param_1, u16*)
+void MActorAnmBck::setAnmFromIndex(int index, u16*)
 {
 	if (unk2A == 2 && unk0 != -1)
 		unk34->keepCurAnm(getData()->getAnmPtr(getUnk0()), unk4.getFrame());
 
-	setFrameCtrl(param_1);
+	setFrameCtrl(index);
 
 	if (unk2A == 2)
 		unk34->setNewAnm(getData()->getAnmPtr(unk0));
@@ -191,7 +191,7 @@ void MActorAnmBtp::setTexNoAnmFullPtr()
 	}
 }
 
-void MActorAnmBtp::checkUseMaterialIDInit(u16* param_1)
+void MActorAnmBtp::checkUseMaterialIDInit(u16* material_ids)
 {
 	for (int i = 0; i < getData()->getAnmNum(); ++i) {
 		J3DAnmTexPattern* anm = getData()->getAnmPtr(i);
@@ -201,7 +201,7 @@ void MActorAnmBtp::checkUseMaterialIDInit(u16* param_1)
 				if (strcmp(anm->getUpdateMaterialName()->getName(j),
 				           unk18->getModelData()->getMaterialName()->getName(k))
 				    == 0) {
-					param_1[k] = id;
+					material_ids[k] = id;
 					break;
 				}
 			}
@@ -209,15 +209,15 @@ void MActorAnmBtp::checkUseMaterialIDInit(u16* param_1)
 	}
 }
 
-void MActorAnmBtp::checkUseMaterialID(u16* param_1)
+void MActorAnmBtp::checkUseMaterialID(u16* material_ids)
 {
-	if (param_1 == nullptr || unk24 == nullptr)
+	if (material_ids == nullptr || unk24 == nullptr)
 		return;
 
 	for (u16 i = 0; i < unk24->getUpdateMaterialNum(); ++i) {
 		u32 id = unk24->getUpdateMaterialID(i);
 		if (id != 0xffff)
-			param_1[id] = id;
+			material_ids[id] = id;
 	}
 }
 
@@ -232,7 +232,7 @@ void MActorAnmBtp::updateOut()
 	unk18->getModelData()->removeTexNoAnimator(unk24);
 }
 
-void MActorAnmBtk::checkUseMaterialIDInit(u16* param_1)
+void MActorAnmBtk::checkUseMaterialIDInit(u16* material_ids)
 {
 	for (int i = 0; i < getData()->getAnmNum(); ++i) {
 		J3DAnmTextureSRTKey* anm = getData()->getAnmPtr(i);
@@ -241,7 +241,7 @@ void MActorAnmBtk::checkUseMaterialIDInit(u16* param_1)
 				if (strcmp(anm->getUpdateMaterialName()->getName(j),
 				           unk18->getModelData()->getMaterialName()->getName(k))
 				    == 0) {
-					param_1[k] = j;
+					material_ids[k] = j;
 					break;
 				}
 			}
@@ -249,15 +249,15 @@ void MActorAnmBtk::checkUseMaterialIDInit(u16* param_1)
 	}
 }
 
-void MActorAnmBtk::checkUseMaterialID(u16* param_1)
+void MActorAnmBtk::checkUseMaterialID(u16* material_ids)
 {
-	if (param_1 == nullptr || unk24 == nullptr)
+	if (material_ids == nullptr || unk24 == nullptr)
 		return;
 
 	for (u16 i = 0; i < unk24->getUpdateMaterialNum(); ++i) {
 		u32 id = unk24->getUpdateMaterialID(i);
 		if (id != 0xffff)
-			param_1[id] = id;
+			material_ids[id] = id;
 	}
 }
 
@@ -290,7 +290,7 @@ void MActorAnmBtk::updateOut()
 	unk18->getModelData()->removeTexMtxAnimator(unk24);
 }
 
-void MActorAnmBpk::checkUseMaterialIDInit(u16* param_1)
+void MActorAnmBpk::checkUseMaterialIDInit(u16* material_ids)
 {
 	for (int i = 0; i < getData()->getAnmNum(); ++i) {
 		J3DAnmColorKey* anm = getData()->getAnmPtr(i);
@@ -299,7 +299,7 @@ void MActorAnmBpk::checkUseMaterialIDInit(u16* param_1)
 				if (strcmp(anm->getUpdateMaterialName()->getName(j),
 				           unk18->getModelData()->getMaterialName()->getName(k))
 				    == 0) {
-					param_1[k] = j;
+					material_ids[k] = j;
 					break;
 				}
 			}
@@ -307,15 +307,15 @@ void MActorAnmBpk::checkUseMaterialIDInit(u16* param_1)
 	}
 }
 
-void MActorAnmBpk::checkUseMaterialID(u16* param_1)
+void MActorAnmBpk::checkUseMaterialID(u16* material_ids)
 {
-	if (param_1 == nullptr || unk24 == nullptr)
+	if (material_ids == nullptr || unk24 == nullptr)
 		return;
 
 	for (u16 i = 0; i < unk24->getUpdateMaterialNum(); ++i) {
 		u32 id = unk24->getUpdateMaterialID(i);
 		if (id != 0xffff)
-			param_1[id] = id;
+			material_ids[id] = id;
 	}
 }
 
@@ -392,18 +392,18 @@ void MActorAnmBrk::updateOut()
 	unk18->getModelData()->removeTevRegAnimator(unk24);
 }
 
-void MActorAnmBrk::checkUseMaterialIDInit(u16* param_1)
+void MActorAnmBrk::checkUseMaterialIDInit(u16* material_ids)
 {
 	for (u16 i = 0; i < unk18->getModelData()->getMaterialNum(); ++i)
-		if (param_1[i] == 0x32)
-			param_1[i] = i;
+		if (material_ids[i] == 0x32)
+			material_ids[i] = i;
 }
 
-void MActorAnmBrk::checkUseMaterialID(u16* param_1)
+void MActorAnmBrk::checkUseMaterialID(u16* material_ids)
 {
 	for (u16 i = 0; i < unk18->getModelData()->getMaterialNum(); ++i)
-		if (param_1[i] == 0x32)
-			param_1[i] = i;
+		if (material_ids[i] == 0x32)
+			material_ids[i] = i;
 }
 
 void MActorAnmBlk::updateIn()
@@ -416,7 +416,7 @@ void MActorAnmBlk::updateIn()
 
 void MActorAnmBlk::updateOut() { unk28->setAnm(nullptr); }
 
-void MActorAnmBlk::setAnmFromIndex(int param_1, u16* param_2)
+void MActorAnmBlk::setAnmFromIndex(int index, u16* material_ids)
 {
-	setFrameCtrl(param_1);
+	setFrameCtrl(index);
 }

@@ -22,36 +22,36 @@ inline J3DJoint* M3UModel::getJoint(u16 idx)
 	return getModel()->getModelData()->getJointNodePointer(idx);
 }
 
-J3DMtxCalc* M3UModelCommon::getMtxCalc(const M3UMtxCalcSetInfo& param_1)
+J3DMtxCalc* M3UModelCommon::getMtxCalc(const M3UMtxCalcSetInfo& set_info)
 {
 	// Same type as in J3DNewMtxCalcAnm
 	// TODO: Extract to enum?
-	switch (param_1.mAnmType) {
+	switch (set_info.mAnmType) {
 	case 0:
-		return &unk10[param_1.mMtxCalcIdx];
+		return &unk10[set_info.mMtxCalcIdx];
 	case 1:
-		return &unk14[param_1.mMtxCalcIdx];
+		return &unk14[set_info.mMtxCalcIdx];
 	}
 	return nullptr;
 }
 
-void M3UModel::changeMtxCalcAnmTransform(int param_1, u8 param_2)
+void M3UModel::changeMtxCalcAnmTransform(int entry_index, u8 anm_index)
 {
-	M3UMtxCalcSetInfo& ptr = unk14[param_1];
-	ptr.mAnmTransformIdx   = param_2;
+	M3UMtxCalcSetInfo& info = unk14[entry_index];
+	info.mAnmTransformIdx   = anm_index;
 
-	J3DFrameCtrl& ctrl = unkC[ptr.mFrameCalcIdx];
-	ctrl.setEnd(unk4->unk4[param_2]->getFrameMax());
+	J3DFrameCtrl& ctrl = unkC[info.mFrameCalcIdx];
+	ctrl.setEnd(unk4->unk4[anm_index]->getFrameMax());
 	ctrl.setFrame(0.0f);
 }
 
-void M3UModel::changeAnmTexPattern(int param_1, u8 param_2)
+void M3UModel::changeAnmTexPattern(int entry_index, u8 anm_index)
 {
-	Unk1CStruct& tmp = unk1C[param_1];
-	tmp.unk0         = param_2;
+	Unk1CStruct& info = unk1C[entry_index];
+	info.unk0         = anm_index;
 
-	J3DFrameCtrl& ctrl = getFrameCtrl(tmp.unk1);
-	ctrl.setEnd(unk4->unk8[param_2]->getFrameMax());
+	J3DFrameCtrl& ctrl = getFrameCtrl(info.unk1);
+	ctrl.setEnd(unk4->unk8[anm_index]->getFrameMax());
 	ctrl.setFrame(0.0f);
 }
 

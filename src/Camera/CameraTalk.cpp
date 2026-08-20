@@ -5,32 +5,32 @@
 #include <Camera/CameraMarioData.hpp>
 #include <NPC/NpcBase.hpp>
 
-void CPolarSubCamera::makeMtxForTalk(const TBaseNPC* param_1)
+void CPolarSubCamera::makeMtxForTalk(const TBaseNPC* npc)
 {
 	killHeightPan_();
 	mCurrentTarget.unk2C = mCurrentTarget.mYaw;
 	mCurrentTarget.mYaw  = *gpMarioAngleY - 0x8000;
 	mSavedModeBeforeTalk = mMode;
 
-	int r31  = CAMERA_MODE_TALK_A;
-	u32 type = param_1->getActorType();
+	int mode = CAMERA_MODE_TALK_A;
+	u32 type = npc->getActorType();
 	switch (type) {
 	case 0x400001B:
-		r31 = CAMERA_MODE_TALK_C;
+		mode = CAMERA_MODE_TALK_C;
 		break;
 	case 0x400001A:
-		r31 = CAMERA_MODE_TALK_D;
+		mode = CAMERA_MODE_TALK_D;
 		break;
 	case 0x4000007:
-		r31 = CAMERA_MODE_TALK_E;
+		mode = CAMERA_MODE_TALK_E;
 		break;
 	default:
-		if (param_1->isSmallNpc())
-			r31 = CAMERA_MODE_TALK_B;
+		if (npc->isSmallNpc())
+			mode = CAMERA_MODE_TALK_B;
 		break;
 	}
 
-	changeCamMode_(r31);
+	changeCamMode_(mode);
 }
 
 void CPolarSubCamera::makeMtxForPrevTalk()

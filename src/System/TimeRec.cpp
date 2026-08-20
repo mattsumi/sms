@@ -18,10 +18,10 @@ bool TTimeArray::append(u32 time, u32 color)
 	return result;
 }
 
-TTimeRec* TTimeRec::start(u16 param_1)
+TTimeRec* TTimeRec::start(u16 token_base)
 {
 	if (_instance == nullptr)
-		_instance = new TTimeRec(param_1);
+		_instance = new TTimeRec(token_base);
 	return _instance;
 }
 
@@ -35,16 +35,16 @@ void TTimeRec::end()
 }
 
 // UNUSED, size matches mario.MAP (0x5C)
-void TTimeRec::drawSyncCallbackSt(u16 param_1)
+void TTimeRec::drawSyncCallbackSt(u16 token)
 {
 	if (_instance)
-		_instance->TTimeRec::drawSyncCallback(param_1);
+		_instance->TTimeRec::drawSyncCallback(token);
 }
 
-TTimeRec::TTimeRec(u16 param_1)
+TTimeRec::TTimeRec(u16 token_base)
     : unk814(0)
     , unk818(0)
-    , unk81A(param_1)
+    , unk81A(token_base)
     , unk81C(0)
 {
 }
@@ -71,9 +71,9 @@ void TTimeRec::flip()
 	crTimeAry()[1].mSize = 0;
 }
 
-void TTimeRec::snapGXTime(u32 param_1)
+void TTimeRec::snapGXTime(u32 color)
 {
-	if (crTimeAry()[1].append(0, param_1)) {
+	if (crTimeAry()[1].append(0, color)) {
 		if ((unk81C & 1) == 0) {
 			u16 token = unk81A + crTimeAry()[1].size() - 1;
 			if (TDrawSyncManager::smInstance)
@@ -104,7 +104,7 @@ void TTimeRec::suppleGXTime()
 	}
 }
 
-void TTimeRec::drawSyncCallback(u16 param_1)
+void TTimeRec::drawSyncCallback(u16 token)
 {
-	unk4[unk814][1][param_1 - unk81A].time = OSGetTick();
+	unk4[unk814][1][token - unk81A].time = OSGetTick();
 }

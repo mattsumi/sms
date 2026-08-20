@@ -19,14 +19,14 @@ TStageEnemyInfoTable::TStageEnemyInfoTable(const char* name)
 	gpConductor->registerEnemyInfoTable(this);
 }
 
-TStageEnemyInfo* TStageEnemyInfoTable::getMatchedInfo(s32 param_1)
+TStageEnemyInfo* TStageEnemyInfoTable::getMatchedInfo(s32 flags)
 {
 	s32 weightSum = 0;
 	for (TStageEnemyInfo **it = getChildren().begin(),
 	                     **e = getChildren().end();
 	     it != e; ++it) {
 		TStageEnemyInfo* info = *it;
-		if (info->isMatching(param_1))
+		if (info->isMatching(flags))
 			weightSum += info->getWeight();
 	}
 
@@ -37,7 +37,7 @@ TStageEnemyInfo* TStageEnemyInfoTable::getMatchedInfo(s32 param_1)
 	for (TStageEnemyInfo **it = getChildren().begin(),
 	                     **e = getChildren().end();
 	     it != e; ++it) {
-		if ((*it)->isMatching(param_1)) {
+		if ((*it)->isMatching(flags)) {
 			x -= (*it)->getWeight();
 			if (x <= 0)
 				return *it;

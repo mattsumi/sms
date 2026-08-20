@@ -40,9 +40,9 @@ static const MapObjFloatParams param_table[] = {
 };
 // clang-format on
 
-void TMapObjFloatOnSea::touchPlayer(THitActor* param_1)
+void TMapObjFloatOnSea::touchPlayer(THitActor* actor)
 {
-	TLeanBlock::touchPlayer(param_1);
+	TLeanBlock::touchPlayer(actor);
 	if (marioIsOn())
 		unk194->push();
 }

@@ -13,17 +13,17 @@
 #include <Map/MapData.hpp>
 #include <System/Application.hpp>
 
-TMultiBtk::TMultiBtk(int param_1, J3DModelData* param_2)
+TMultiBtk::TMultiBtk(int num, J3DModelData* model_data)
 {
-	unk00 = param_1;
-	unk04 = new J3DAnmTextureSRTKey*[param_1];
-	unk08 = param_2;
-	unk0c = new J3DFrameCtrl[param_1];
+	unk00 = num;
+	unk04 = new J3DAnmTextureSRTKey*[num];
+	unk08 = model_data;
+	unk0c = new J3DFrameCtrl[num];
 }
 
-void TMultiBtk::setNthData(int n, J3DAnmTextureSRTKey* param_2)
+void TMultiBtk::setNthData(int n, J3DAnmTextureSRTKey* anm)
 {
-	unk04[n] = param_2;
+	unk04[n] = anm;
 	unk04[n]->searchUpdateMaterialID(unk08);
 	if (n == 0) {
 		for (u16 i = 0; i < unk08->getMaterialNum(); ++i) {
@@ -49,13 +49,13 @@ void TMultiBtk::update()
 void SMS_DumpJ3DModel(J3DModel* model) { }
 
 void SMS_RideMoveByGroundActor(TRidingInfo* riding_info,
-                               JGeometry::TVec3<f32>* pos, f32* arg2)
+                               JGeometry::TVec3<f32>* pos, f32* angle_y)
 {
 	const TBGCheckData* checkData;
-	f32 temp_f1
+	f32 groundY
 	    = gpMap->checkGround(pos->x, 100.0f + pos->y, pos->z, &checkData);
 
-	if (checkData->getActor() != nullptr && ((pos->y - temp_f1) < 50.0f)) {
+	if (checkData->getActor() != nullptr && ((pos->y - groundY) < 50.0f)) {
 		if (riding_info->unk0 == nullptr
 		    || riding_info->unk0 != checkData->getActor()) {
 			riding_info->unk0 = checkData->mActor;
@@ -68,7 +68,8 @@ void SMS_RideMoveByGroundActor(TRidingInfo* riding_info,
 				PSMTXCopy(*riding_info->unk0->getRootJointMtx(), mtx.mMtx);
 			}
 			MTXMultVec(mtx.mMtx, &riding_info->localPos, pos);
-			*arg2 = *arg2 + riding_info->unk0->mRotation.y - riding_info->unk10;
+			*angle_y
+			    = *angle_y + riding_info->unk0->mRotation.y - riding_info->unk10;
 			riding_info->unk10 = riding_info->unk0->mRotation.y;
 		}
 	} else {
@@ -93,19 +94,19 @@ void SMS_RideMoveCalcLocalPos(TRidingInfo* riding_info,
 	MTXMultVec(mtx.mMtx, (Vec*)&pos, &riding_info->localPos);
 }
 
-J3DModel* SMS_CreatePartsModel(char* arg0, u32 arg1)
+J3DModel* SMS_CreatePartsModel(char* name, u32 flags)
 {
-	J3DModelData* temp_r31 = J3DModelLoaderDataBase::load(
-	    JKRFileLoader::getGlbResource(arg0), arg1);
-	J3DModel* temp_r3 = new J3DModel(temp_r31, arg1, 1U);
-	return temp_r3;
+	J3DModelData* modelData = J3DModelLoaderDataBase::load(
+	    JKRFileLoader::getGlbResource(name), flags);
+	J3DModel* model = new J3DModel(modelData, flags, 1U);
+	return model;
 }
 
 SDLModel* SMS_CreateMinimumSDLModel(const char* name)
 {
-	J3DModelData* temp_r31 = J3DModelLoaderDataBase::load(
+	J3DModelData* modelData = J3DModelLoaderDataBase::load(
 	    JKRFileLoader::getGlbResource(name), 0x10000);
-	SDLModelData* temp_r3_2 = new SDLModelData(temp_r31);
-	SDLModel* temp_r3       = new SDLModel(temp_r3_2, 3U, 1U);
-	return temp_r3;
+	SDLModelData* sdlModelData = new SDLModelData(modelData);
+	SDLModel* model            = new SDLModel(sdlModelData, 3U, 1U);
+	return model;
 }

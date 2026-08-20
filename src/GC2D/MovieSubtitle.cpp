@@ -15,34 +15,34 @@ namespace {
 
 const int cLongHeightMovieIdList[] = { 9, 20 };
 
-bool is_longheight_movie(u32 param_1)
+bool is_longheight_movie(u32 movie_id)
 {
 	const int* i = cLongHeightMovieIdList;
 	const int* e = cLongHeightMovieIdList + ARRAY_COUNT(cLongHeightMovieIdList);
-	while (i != e && *i != param_1)
+	while (i != e && *i != movie_id)
 		++i;
 	return i != e;
 }
 
 } // namespace
 
-TMovieSubTitle::TMovieSubTitle(const TTHPRender* param_1)
-    : unk10(param_1)
+TMovieSubTitle::TMovieSubTitle(const TTHPRender* render)
+    : unk10(render)
     , unk14(nullptr)
     , unk18(nullptr)
     , unk1C(nullptr)
 {
 }
 
-void TMovieSubTitle::setupResource(const char* param_1, JKRArchive* param_2)
+void TMovieSubTitle::setupResource(const char* movie_name, JKRArchive* archive)
 {
 	char buffer[256];
 
 	if (is_longheight_movie(gpApplication.getMovie())) {
-		J2DSetScreen* screen = new J2DSetScreen("demo_1.blo", param_2);
+		J2DSetScreen* screen = new J2DSetScreen("demo_1.blo", archive);
 		unk14                = screen;
 	} else {
-		J2DSetScreen* screen = new J2DSetScreen("demo_2.blo", param_2);
+		J2DSetScreen* screen = new J2DSetScreen("demo_2.blo", archive);
 		unk14                = screen;
 	}
 
@@ -59,7 +59,7 @@ void TMovieSubTitle::setupResource(const char* param_1, JKRArchive* param_2)
 
 	TMessageLoader* loader = new TMessageLoader;
 	unk20                 = loader;
-	makeBmgName(buffer, ARRAY_COUNT(buffer), param_1);
+	makeBmgName(buffer, ARRAY_COUNT(buffer), movie_name);
 	unk20->loadMessageData(buffer);
 
 	unk24 = 0;
@@ -132,16 +132,16 @@ void TMovieSubTitle::setCurMessage()
 	snprintf(unk1C->getStringPtr(), 256, "%s", msg);
 }
 
-void TMovieSubTitle::makeBmgName(char* buffer, int, const char* param_3)
+void TMovieSubTitle::makeBmgName(char* buffer, int, const char* movie_name)
 {
-	sprintf(buffer, "/subtitle/%s", param_3);
+	sprintf(buffer, "/subtitle/%s", movie_name);
 	char* it = strrchr(buffer, '.');
 	strcpy(it, ".bmg");
 }
 
-void TMovieSubTitle::draw(JDrama::TGraphics* param_1)
+void TMovieSubTitle::draw(JDrama::TGraphics* graphics)
 {
-	J2DOrthoGraph graph(param_1->getViewport());
+	J2DOrthoGraph graph(graphics->getViewport());
 	graph.setup2D();
 	unk14->draw(0, 0, &graph);
 }

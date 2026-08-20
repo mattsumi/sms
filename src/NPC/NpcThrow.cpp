@@ -8,25 +8,25 @@
 // rogue
 #include <System/DummyStrings.hpp>
 
-void TNpcThrow::throwMario(THitActor* param_1)
+void TNpcThrow::throwMario(THitActor* thrower)
 {
-	JGeometry::TVec3<f32> local_14;
+	JGeometry::TVec3<f32> throwDir;
 	if (unk4 >= 90.0f) {
-		local_14.set(0.0f, 1.0f, 0.0f);
+		throwDir.set(0.0f, 1.0f, 0.0f);
 	} else if (unk4 <= 0.0f) {
-		local_14.set(0.0f, 0.0f, -1.0f);
+		throwDir.set(0.0f, 0.0f, -1.0f);
 	} else {
 		s16 angle = CLBDegToShortAngle(unk4);
-		local_14.set(0.0f, JMASSin(angle), -JMASCos(angle));
+		throwDir.set(0.0f, JMASSin(angle), -JMASCos(angle));
 	}
 
-	s16 sYaw = CLBDegToShortAngle(param_1->mRotation.y);
+	s16 sYaw = CLBDegToShortAngle(thrower->mRotation.y);
 
-	f32 x = local_14.x;
+	f32 x = throwDir.x;
 
-	local_14.x = x * JMASCos(sYaw) + local_14.z * JMASSin(sYaw);
-	local_14.z = -x * JMASSin(sYaw) + local_14.z * JMASCos(sYaw);
+	throwDir.x = x * JMASCos(sYaw) + throwDir.z * JMASSin(sYaw);
+	throwDir.z = -x * JMASSin(sYaw) + throwDir.z * JMASCos(sYaw);
 
-	SMS_SendMessageToMario(param_1, HIT_MESSAGE_THROWN);
-	SMS_ThrowMario(local_14, unk0);
+	SMS_SendMessageToMario(thrower, HIT_MESSAGE_THROWN);
+	SMS_ThrowMario(throwDir, unk0);
 }

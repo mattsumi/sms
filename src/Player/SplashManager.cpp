@@ -42,7 +42,7 @@ void TSplashManager::load(JSUMemoryInputStream& stream)
 	gpSplashManager = this;
 }
 
-void TSplashManager::newSplash(JGeometry::TVec3<f32> param_1, f32 param_2)
+void TSplashManager::newSplash(JGeometry::TVec3<f32> pos, f32 velocity)
 {
 	if (unk124.getNumLinks() != 0 && !SMS_isDivingMap()) {
 		JSULink<TWaterSplash>* link = unk124.getFirst();
@@ -51,8 +51,8 @@ void TSplashManager::newSplash(JGeometry::TVec3<f32> param_1, f32 param_2)
 
 		TWaterSplash* splash = link->getObject();
 
-		splash->unk0  = param_1;
-		splash->unkC  = param_2;
+		splash->unk0  = pos;
+		splash->unkC  = velocity;
 		splash->unk10 = unk648;
 	}
 }
@@ -82,11 +82,11 @@ void TSplashManager::move()
 	}
 }
 
-void TSplashManager::makeDL(JDrama::TGraphics* param_1) const
+void TSplashManager::makeDL(JDrama::TGraphics* graphics) const
 {
-	MtxPtr viewMtx = param_1->mViewMtx;
+	MtxPtr viewMtx = graphics->mViewMtx;
 
-	JGeometry::TVec3<f32> thing[4];
+	JGeometry::TVec3<f32> corners[4];
 
 	unk640->reset();
 	for (JSULink<TWaterSplash>* link = unk118.getFirst(); link;
@@ -101,15 +101,15 @@ void TSplashManager::makeDL(JDrama::TGraphics* param_1) const
 			continue;
 		}
 
-		f32 fVar1 = ((f32)unk648 - splash->unk10) / unk648 * unk634 + unk630;
-		u8 alpha  = splash->unk10 * 255 / unk648;
+		f32 size = ((f32)unk648 - splash->unk10) / unk648 * unk634 + unk630;
+		u8 alpha = splash->unk10 * 255 / unk648;
 
-		thing[0].set(pos.x - fVar1, pos.y + fVar1, pos.z);
-		thing[1].set(pos.x + fVar1, pos.y + fVar1, pos.z);
-		thing[2].set(pos.x + fVar1, pos.y - fVar1, pos.z);
-		thing[3].set(pos.x - fVar1, pos.y - fVar1, pos.z);
+		corners[0].set(pos.x - size, pos.y + size, pos.z);
+		corners[1].set(pos.x + size, pos.y + size, pos.z);
+		corners[2].set(pos.x + size, pos.y - size, pos.z);
+		corners[3].set(pos.x - size, pos.y - size, pos.z);
 
-		unk640->requestCol(thing, (GXColor) { 0xff, 0xff, 0xff, alpha },
+		unk640->requestCol(corners, (GXColor) { 0xff, 0xff, 0xff, alpha },
 		                   splash->unk11);
 	}
 	unk640->setEnd();
@@ -117,7 +117,7 @@ void TSplashManager::makeDL(JDrama::TGraphics* param_1) const
 
 void TSplashManager::draw() const
 {
-	Mtx afStack_38;
+	Mtx identity;
 
 	GXClearVtxDesc();
 	GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
@@ -126,10 +126,10 @@ void TSplashManager::draw() const
 	GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
 	GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
 	GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_U8, 7);
-	MTXIdentity(afStack_38);
+	MTXIdentity(identity);
 	GXSetCurrentMtx(GX_PNMTX0);
-	GXLoadPosMtxImm(afStack_38, GX_PNMTX0);
-	GXLoadNrmMtxImm(afStack_38, GX_PNMTX0);
+	GXLoadPosMtxImm(identity, GX_PNMTX0);
+	GXLoadNrmMtxImm(identity, GX_PNMTX0);
 	GXSetNumChans(1);
 	GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_VTX, GX_SRC_VTX, 0, GX_DF_NONE,
 	              GX_AF_NONE);

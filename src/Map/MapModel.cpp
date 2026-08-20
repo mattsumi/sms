@@ -89,14 +89,14 @@ void TMapModel::initUnderpass()
 	zmode->setUpdateEnable(GX_FALSE);
 }
 
-void TMapModel::initJointModel(TJointModelManager* param_1, const char* param_2,
-                               MActorAnmData* param_3)
+void TMapModel::initJointModel(TJointModelManager* manager, const char* name,
+                               MActorAnmData* anm_data)
 {
-	TJointModel::initJointModel(param_1, param_2, param_3);
-	if (mActor->checkAnmFileExist(param_2, 4))
-		mActor->setBtk(param_2);
-	if (mActor->checkAnmFileExist(param_2, 5))
-		mActor->setBrk(param_2);
+	TJointModel::initJointModel(manager, name, anm_data);
+	if (mActor->checkAnmFileExist(name, 4))
+		mActor->setBtk(name);
+	if (mActor->checkAnmFileExist(name, 5))
+		mActor->setBrk(name);
 
 	mActor->calc();
 	initUnderpass();

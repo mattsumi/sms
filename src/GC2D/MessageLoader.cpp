@@ -8,25 +8,25 @@ TMessageLoader::TMessageLoader()
 {
 }
 
-TMessageLoader::TMessageLoader(const char* param_1)
+TMessageLoader::TMessageLoader(const char* resource_name)
     : unk0(0)
     , unk4(0)
 {
-	u8* res = (u8*)JKRGetResource(param_1);
+	u8* res = (u8*)JKRGetResource(resource_name);
 	if (res) {
-		u32 a;
-		u32 b;
-		readHeader(&a, &b, res);
-		unk4 = parseBlock(a, b, res + 0x20);
+		u32 size;
+		u32 count;
+		readHeader(&size, &count, res);
+		unk4 = parseBlock(size, count, res + 0x20);
 		// NOTE: assert but in an if?
 		if (unk4)
 			(void)unk4;
 	}
 }
 
-u32 TMessageLoader::loadMessageData(const char* param_1)
+u32 TMessageLoader::loadMessageData(const char* resource_name)
 {
-	u8* res = (u8*)JKRGetResource(param_1);
+	u8* res = (u8*)JKRGetResource(resource_name);
 	if (!res)
 		return -1;
 
@@ -47,51 +47,51 @@ void TMessageLoader::readHeader(u32* a, u32* b, void* header)
 	*b = count;
 }
 
-void* TMessageLoader::parseBlock(u32 param_1, u32 param_2, void* param_3)
+void* TMessageLoader::parseBlock(u32 size, u32 block_num, void* data)
 {
-	int local_74;
-	int local_70;
-	JSUMemoryInputStream local_5c(param_3, param_1);
+	int blockTag;
+	int blockLength;
+	JSUMemoryInputStream stream(data, size);
 
 	void* result;
 
-	for (int i = 0; i < param_2; ++i) {
-		local_5c.read(&local_74, 4);
+	for (int i = 0; i < block_num; ++i) {
+		stream.read(&blockTag, 4);
 
-		switch (local_74) {
+		switch (blockTag) {
 		case 'INF1': {
-			local_70 = readInfoBlock(local_5c.getCurrent());
-			local_5c.skip(4);
+			blockLength = readInfoBlock(stream.getCurrent());
+			stream.skip(4);
 			break;
 		}
 
 		case 'DAT1':
-			local_5c.read(&local_70, 4);
-			result = local_5c.getCurrent();
+			stream.read(&blockLength, 4);
+			result = stream.getCurrent();
 			break;
 
 		case 'STR1':
-			local_70 = 0;
+			blockLength = 0;
 			break;
 
 		default:
-			local_70 = 0;
+			blockLength = 0;
 			break;
 		}
 
-		local_5c.skip(local_70 - 8);
+		stream.skip(blockLength - 8);
 	}
 
 	return result;
 }
 
-TMessageLoader::EntryInfo* TMessageLoader::getMessageEntry(u32 param_1)
+TMessageLoader::EntryInfo* TMessageLoader::getMessageEntry(u32 index)
 {
 	EntryInfo* result;
-	if (u16(param_1) >= unk0)
+	if (u16(index) >= unk0)
 		result = nullptr;
 	else
-		result = &unk8[param_1];
+		result = &unk8[index];
 
 	return result;
 }
@@ -101,14 +101,14 @@ int TMessageLoader::readInfoBlock(void* data)
 	int* content = (int*)data;
 	int length   = *content++;
 	u16 entrySize;
-	JSUMemoryInputStream local_38(content, length - 8);
-	local_38.read(unk0);
-	local_38.read(entrySize);
-	unk2 = local_38.readU16();
-	local_38.skip(2);
+	JSUMemoryInputStream stream(content, length - 8);
+	stream.read(unk0);
+	stream.read(entrySize);
+	unk2 = stream.readU16();
+	stream.skip(2);
 
 	for (int i = 0; i < unk0; ++i)
-		local_38.read(&unk8[i], sizeof(EntryInfo));
+		stream.read(&unk8[i], sizeof(EntryInfo));
 
 	return length;
 }

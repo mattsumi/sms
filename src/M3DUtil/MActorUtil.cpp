@@ -12,11 +12,11 @@ void SMS_DumpMActor(MActor* actor)
 		actor->dumpReport();
 }
 
-MActor* SMS_MakeMActorFromSDLModelData(SDLModelData* param_1,
-                                       MActorAnmData* param_2, u32 param_3)
+MActor* SMS_MakeMActorFromSDLModelData(SDLModelData* model_data,
+                                       MActorAnmData* anm_data, u32 flags)
 {
-	SDLModel* model = new SDLModel(param_1, param_3, 1);
-	MActor* actor   = new MActor(param_2);
+	SDLModel* model = new SDLModel(model_data, flags, 1);
+	MActor* actor   = new MActor(anm_data);
 	// fabricated: dead check shaped like a stripped assert. Its expression
 	// nodes raise this function's inline cost so MWCC keeps the call to it
 	// in SMS_MakeMActorWithAnmData and SMS_MakeMActors instead of inlining
@@ -27,51 +27,51 @@ MActor* SMS_MakeMActorFromSDLModelData(SDLModelData* param_1,
 	return actor;
 }
 
-SDLModelData* SMS_MakeSDLModelData(const char* param_1, u32 param_2)
+SDLModelData* SMS_MakeSDLModelData(const char* name, u32 load_flags)
 {
-	void* res = JKRGetResource(param_1);
+	void* res = JKRGetResource(name);
 
-	J3DModelData* j3ddata = J3DModelLoaderDataBase::load(res, param_2);
+	J3DModelData* j3ddata = J3DModelLoaderDataBase::load(res, load_flags);
 	SDLModelData* sdlData = new SDLModelData(j3ddata);
 
 	return sdlData;
 }
 
-MActor** SMS_MakeMActorsWithAnmData(const char* param_1, MActorAnmData* param_2,
-                                    int param_3, u32 param_4, u32 param_5)
+MActor** SMS_MakeMActorsWithAnmData(const char* name, MActorAnmData* anm_data,
+                                    int num, u32 flags, u32 load_flags)
 {
-	SDLModelData* sdlData = SMS_MakeSDLModelData(param_1, param_5);
+	SDLModelData* sdlData = SMS_MakeSDLModelData(name, load_flags);
 	// fabricated: dead check shaped like a stripped assert. Its expression
 	// nodes raise this function's inline cost so MWCC keeps the call to it
 	// in SMS_MakeMActor instead of inlining one level deeper than the
 	// original binary. TODO: find what the original statement really was.
 	(void)(sdlData != 0);
 
-	MActor** actors = new MActor*[param_3];
-	for (int i = 0; i < param_3; ++i)
-		actors[i] = SMS_MakeMActorFromSDLModelData(sdlData, param_2, param_4);
+	MActor** actors = new MActor*[num];
+	for (int i = 0; i < num; ++i)
+		actors[i] = SMS_MakeMActorFromSDLModelData(sdlData, anm_data, flags);
 
 	return actors;
 }
 
-MActor* SMS_MakeMActorWithAnmData(const char* param_1, MActorAnmData* param_2,
-                                  u32 param_3, u32 param_4)
+MActor* SMS_MakeMActorWithAnmData(const char* name, MActorAnmData* anm_data,
+                                  u32 flags, u32 load_flags)
 {
-	return *SMS_MakeMActorsWithAnmData(param_1, param_2, 1, param_3, param_4);
+	return *SMS_MakeMActorsWithAnmData(name, anm_data, 1, flags, load_flags);
 }
 
-MActor** SMS_MakeMActors(const char* param_1, const char* param_2, int param_3,
-                         u32 param_4, u32 param_5)
+MActor** SMS_MakeMActors(const char* anm_name, const char* model_name, int num,
+                         u32 flags, u32 load_flags)
 {
 	MActorAnmData* anm = new MActorAnmData;
-	anm->init(param_1, nullptr);
+	anm->init(anm_name, nullptr);
 	MActor** actors
-	    = SMS_MakeMActorsWithAnmData(param_2, anm, param_3, param_4, param_5);
+	    = SMS_MakeMActorsWithAnmData(model_name, anm, num, flags, load_flags);
 	return actors;
 }
 
-MActor* SMS_MakeMActor(const char* param_1, const char* param_2, u32 param_3,
-                       u32 param_4)
+MActor* SMS_MakeMActor(const char* anm_name, const char* model_name, u32 flags,
+                       u32 load_flags)
 {
-	return *SMS_MakeMActors(param_1, param_2, 1, param_3, param_4);
+	return *SMS_MakeMActors(anm_name, model_name, 1, flags, load_flags);
 }
