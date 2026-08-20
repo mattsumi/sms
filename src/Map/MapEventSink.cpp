@@ -131,22 +131,20 @@ void TMapEventSink::startControl()
 	J3DTransformInfo& info = unk30->getTransformInfo();
 	unk34                  = info.mTranslate.y;
 
-	f32 dVar4;
+	f32 sinkOffset;
 	if (unk38 != 0.0f)
-		dVar4 = unk38;
+		sinkOffset = unk38;
 	else
-		dVar4 = getSinkOffsetY();
+		sinkOffset = getSinkOffsetY();
 
-	info.mTranslate.y -= dVar4;
+	info.mTranslate.y -= sinkOffset;
 	unk30->setTransformInfo(info);
 
 	unk1C->getMActor()->getModel()->calc();
-	int iVar3 = (unk40 - unk44) - unk48;
-	unk3C     = dVar4 / iVar3;
+	int risingFrames = (unk40 - unk44) - unk48;
+	unk3C            = sinkOffset / risingFrames;
 	unk4C     = unk40;
 
-	// TODO: frame is 8 bytes short of the original (0x60 vs 0x68); the
-	// missing temps are created during this last statement
 	JGeometry::TVec3<f32> trans(info.mTranslate.x, info.mTranslate.y,
 	                            info.mTranslate.z);
 	unk5C[mRaisingBuildingIdx]->setUpTrans(trans);
@@ -179,7 +177,6 @@ void TMapEventSink::initWithBuildingNum(JSUMemoryInputStream& stream)
 
 void TMapEventSink::load(JSUMemoryInputStream& stream)
 {
-	// TODO: matching except for a 0x18 byte frame size shortfall
 	TMapEvent::load(stream);
 	mBuildingNum = stream.readU32();
 	initWithBuildingNum(stream);
@@ -245,8 +242,6 @@ void TMapEventSinkInPollution::initBuriedBuilding()
 
 void TMapEventSinkInPollution::loadAfter()
 {
-	// TODO: matching except for a 0x20 byte frame size shortfall, which
-	// also propagates into the loadAfter overrides that inline this one
 	TMapEventSink::loadAfter();
 	for (int i = 0; i < mBuildingNum; ++i) {
 		TPollutionObj* obj  = getPollutionObj(i);
@@ -287,8 +282,6 @@ void TMapEventSinkInPollutionReset::loadAfter()
 
 void TMapEventSinkBianco::finishControl()
 {
-	// TODO: matching except for frame size and this/rodata-base living in
-	// swapped registers (r30/r31)
 	if (mRaisingBuildingIdx == 0) {
 		char buffer[64];
 		TMapObjBase::setJointTransY(unk64, 0.0f);
@@ -324,7 +317,6 @@ void TMapEventSinkBianco::rising()
 
 bool TMapEventSinkBianco::control()
 {
-	// TODO: matching except for a 0x10 byte frame size shortfall
 	if (mRaisingBuildingIdx == 0 && unk4C == unk7C) {
 		gpItemManager->makeShineAppearWithTime(
 		    "シャイン（坂上げ用）", 300, unk50[mRaisingBuildingIdx].x,
@@ -336,7 +328,6 @@ bool TMapEventSinkBianco::control()
 
 void TMapEventSinkBianco::startControl()
 {
-	// TODO: matching except for one 4 byte stack slot below the TFlagT temp
 	switch (mRaisingBuildingIdx) {
 	case 0: {
 		unk40 = 1320;
@@ -437,9 +428,8 @@ void TMapEventSinkShadowMario::raiseBuilding(int i)
 
 void TMapEventSinkShadowMario::loadAfter()
 {
-	// TODO: nearly matching; the original moves the search result through
-	// r0 and sets up the getBuilding call before the unk64[i] store
-	// (inline-style addi copies), and the frame differs slightly
+	// TODO: the original sets up the getBuilding call before storing
+	// unk64[i], which suggests an inlined accessor around this loop
 	TMapEventSink::loadAfter();
 	for (int i = 0; i < mBuildingNum; ++i) {
 		unk64[i] = JDrama::TNameRefGen::search<JDrama::TPlacement>(unk68[i]);

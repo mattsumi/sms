@@ -1,9 +1,9 @@
 #include <GC2D/BoundPane.hpp>
 #include <JSystem/J2D/J2DScreen.hpp>
 
-TBoundPane::TBoundPane(J2DScreen* param_1, u32 param_2)
+TBoundPane::TBoundPane(J2DScreen* screen, u32 pane_tag)
 {
-	unk0  = param_1->search(param_2);
+	unk0  = screen->search(pane_tag);
 	unk4  = unk0->mBounds;
 	unk28 = 0.0f;
 	unk2C = 0.0f;
@@ -15,26 +15,26 @@ TBoundPane::TBoundPane(J2DScreen* param_1, u32 param_2)
 
 TBoundPane::TBoundPane(JUTTexture*, GXCullMode) { }
 
-void TBoundPane::setPanePosition(s32 param_1, const JUTPoint& param_2,
-                                 const JUTPoint& param_3,
-                                 const JUTPoint& param_4)
+void TBoundPane::setPanePosition(s32 duration, const JUTPoint& start,
+                                 const JUTPoint& control,
+                                 const JUTPoint& end)
 {
 	unk28 = 0.0f;
-	unk2C = 1.0f / param_1;
-	unk38 = param_2;
-	unk40 = param_3;
-	unk48 = param_4;
+	unk2C = 1.0f / duration;
+	unk38 = start;
+	unk40 = control;
+	unk48 = end;
 	unk24 = true;
 }
 
-void TBoundPane::setPaneSize(s32 param_1, const JUTPoint& param_2,
-                             const JUTPoint& param_3, const JUTPoint& param_4)
+void TBoundPane::setPaneSize(s32 duration, const JUTPoint& start,
+                             const JUTPoint& control, const JUTPoint& end)
 {
 	unk30 = 0.0f;
-	unk34 = 1.0f / param_1;
-	unk50 = param_2;
-	unk58 = param_3;
-	unk60 = param_4;
+	unk34 = 1.0f / duration;
+	unk50 = start;
+	unk58 = control;
+	unk60 = end;
 	unk25 = true;
 }
 
@@ -76,20 +76,19 @@ bool TBoundPane::update()
 	return result;
 }
 
-void TBoundPane::makeNewPosition(f32 param_1, JUTPoint& param_2,
-                                 JUTPoint& param_3, JUTPoint& param_4,
-                                 JUTPoint& param_5)
+void TBoundPane::makeNewPosition(f32 t, JUTPoint& out, JUTPoint& start,
+                                 JUTPoint& control, JUTPoint& end)
 {
-	f32 square       = param_1 * param_1;
-	f32 inverse      = 1.0f - param_1;
+	f32 square       = t * t;
+	f32 inverse      = 1.0f - t;
 	f32 startWeight  = inverse * inverse;
-	f32 middleWeight = 2.0f * inverse * param_1;
-	f32 x            = param_5.x * square
-	        + (param_3.x * startWeight + param_4.x * middleWeight);
-	f32 y = param_5.y * square
-	        + (param_3.y * startWeight + param_4.y * middleWeight);
+	f32 middleWeight = 2.0f * inverse * t;
+	f32 x = end.x * square
+	        + (start.x * startWeight + control.x * middleWeight);
+	f32 y = end.y * square
+	        + (start.y * startWeight + control.y * middleWeight);
 
 	s16 adjustedX = x + (x > 0.0f ? 0.5f : -0.5f);
 	s16 adjustedY = y + (y > 0.0f ? 0.5f : -0.5f);
-	param_2.set(adjustedX, adjustedY);
+	out.set(adjustedX, adjustedY);
 }

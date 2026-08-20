@@ -180,16 +180,11 @@ bool SMS_IsMarioTouchGround4cm()
 
 bool SMS_IsMarioSpeedZero() { return gpMarioOriginal->isSpeedZero(); }
 
-// TODO: nonmatching: the target reloads mHolder after the null check
-// (lwz r0, 0x68 for the compare, then lwz r3, 0x68 for the deref).
-// MWCC merges the two reads for every natural spelling tried at -opt
-// level >= 2, and level <= 1 unfuses the !=0 tail (li+subf instead of
-// neg), so no single configuration reproduces both. TMario::calcAnim in
-// MarioDraw.cpp has the same unexplained reload at its two
-// setMotionBlendRatio guards.
-// A const read (TTakeActor::isTaken) plus a non-const one (getHolder) does
-// not split them either: they still merge, and isTaken's TRUE/FALSE ternary
-// materializes as an operand of the &&, costing four instructions (73.6%).
+// TODO: the original reads mHolder twice here, once for the null check and
+// once for the dereference, which no natural spelling reproduces. The same
+// unexplained double read appears at TMario::calcAnim's two
+// setMotionBlendRatio guards in MarioDraw.cpp, so both probably went through
+// a shared accessor that has not been identified yet.
 bool SMS_IsMarioOnWire()
 {
 	bool ret;

@@ -101,20 +101,20 @@ void M3UModel::updateIn()
 void M3UModel::updateOut()
 {
 	for (int i = 0; i < unk10; i++) {
-		M3UMtxCalcSetInfo& unk = unk14[i];
-		unk8->mModelData->getJointNodePointer(unk.mJntIdx)->setMtxCalc(nullptr);
+		M3UMtxCalcSetInfo& info = unk14[i];
+		unk8->mModelData->getJointNodePointer(info.mJntIdx)->setMtxCalc(nullptr);
 	}
 }
 
 void M3UModel::entryInTexPatternAnm()
 {
 	if (unk1C != nullptr) {
-		Unk1CStruct& tmp        = unk1C[0];
-		J3DFrameCtrl& frameCtrl = getFrameCtrl(tmp.unk1);
-		if (tmp.unk0 != 0xff) {
-			J3DAnmTexPattern* pattern = unk4->unk8[tmp.unk0];
+		Unk1CStruct& info       = unk1C[0];
+		J3DFrameCtrl& frameCtrl = getFrameCtrl(info.unk1);
+		if (info.unk0 != 0xff) {
+			J3DAnmTexPattern* pattern = unk4->unk8[info.unk0];
 			pattern->setFrame(frameCtrl.getFrame());
-			unk8->mModelData->setTexNoAnimator(pattern, unk4->unkC[tmp.unk0]);
+			unk8->mModelData->setTexNoAnimator(pattern, unk4->unkC[info.unk0]);
 		}
 	}
 }

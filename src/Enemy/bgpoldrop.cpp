@@ -28,33 +28,33 @@ void TBGPolDrop::move()
 	if (!unk58)
 		return;
 
-	JGeometry::TVec3<f32> local_14 = getPosition();
-	local_14 += unk44;
+	JGeometry::TVec3<f32> nextPos = getPosition();
+	nextPos += unk44;
 
 	if (unk58 == 1) {
 		unk44.y -= 0.2f;
 		const TBGCheckData* checkData;
-		f32 dVar3 = gpMap->checkGround(local_14.x, mPosition.y, local_14.z,
+		f32 groundHeight = gpMap->checkGround(nextPos.x, mPosition.y, nextPos.z,
 		                               &checkData);
-		dVar3 += 1.0f;
+		groundHeight += 1.0f;
 
 		if (checkData->checkFlag(BG_CHECK_FLAG_ILLEGAL)) {
 			unk58 = 0;
 			return;
 		}
 
-		if (local_14.y < dVar3) {
+		if (nextPos.y < groundHeight) {
 			unk58      = 2;
-			local_14.y = dVar3;
+			nextPos.y = groundHeight;
 			unk44.zero();
 			if (!unk50->checkCurBckFromIndex(12)) {
 				unk50->setBckFromIndex(12);
 				unk54->setBckFromIndex(13);
 			}
 
-			gpMarioParticleManager->emit(BGESO_JPA_MS_BOGE_ODANHIT_A, &local_14,
+			gpMarioParticleManager->emit(BGESO_JPA_MS_BOGE_ODANHIT_A, &nextPos,
 			                             0, nullptr);
-			gpMarioParticleManager->emit(BGESO_JPA_MS_BOGE_ODANHIT_B, &local_14,
+			gpMarioParticleManager->emit(BGESO_JPA_MS_BOGE_ODANHIT_B, &nextPos,
 			                             0, nullptr);
 			SMSGetMSound()->startSoundActor(MSD_SE_BS_GESO_GERO_LAND,
 			                                &mPosition, 0, nullptr, 0, 4);
@@ -63,22 +63,22 @@ void TBGPolDrop::move()
 			unk50->setBckFromIndex(11);
 		}
 
-		if (gpMap->isTouchedOneWallAndMoveXZ(&local_14.x, local_14.y,
-		                                     &local_14.z, 80.0f))
+		if (gpMap->isTouchedOneWallAndMoveXZ(&nextPos.x, nextPos.y,
+		                                     &nextPos.z, 80.0f))
 			unk58 = 0;
 
 	} else if (unk58 == 2 && unk50->curAnmEndsNext()) {
 		unk58 = 0;
 	}
 
-	mPosition = local_14;
+	mPosition = nextPos;
 }
 
-void TBGPolDrop::launch(const JGeometry::TVec3<f32>& param_1,
-                        const JGeometry::TVec3<f32>& param_2)
+void TBGPolDrop::launch(const JGeometry::TVec3<f32>& pos,
+                        const JGeometry::TVec3<f32>& velocity)
 {
-	unk44     = param_2;
-	mPosition = param_1;
+	unk44     = velocity;
+	mPosition = pos;
 	mScaling.set(1.0f, 1.0f, 1.0f);
 	mRotation.zero();
 	unk58 = 1;
@@ -95,30 +95,30 @@ void TBGPolDrop::perform(u32 cue, JDrama::TGraphics* graphics)
 	if (cue & CUE_CALC_ANIM) {
 		MtxPtr m = unk50->getModel()->getBaseTRMtx();
 		if (unk58 == 1) {
-			Mtx local_60;
+			Mtx rotX;
 			f32 s          = JMASin(-90.0f);
 			f32 c          = JMACos(-90.0f);
-			local_60[0][0] = 1.0;
-			local_60[0][1] = 0.0;
-			local_60[0][2] = 0.0;
-			local_60[0][3] = 0.0;
+			rotX[0][0] = 1.0;
+			rotX[0][1] = 0.0;
+			rotX[0][2] = 0.0;
+			rotX[0][3] = 0.0;
 
-			local_60[1][0] = 0.0;
-			local_60[1][1] = c;
-			local_60[1][2] = -s;
-			local_60[1][3] = 0.0;
+			rotX[1][0] = 0.0;
+			rotX[1][1] = c;
+			rotX[1][2] = -s;
+			rotX[1][3] = 0.0;
 
-			local_60[2][0] = 0.0;
-			local_60[2][1] = s;
-			local_60[2][2] = c;
-			local_60[2][3] = 0.0;
+			rotX[2][0] = 0.0;
+			rotX[2][1] = s;
+			rotX[2][2] = c;
+			rotX[2][3] = 0.0;
 
 			mRotation = MsGetRotFromZaxis(unk44);
 
 			MsMtxSetXYZRPH(m, mPosition.x, mPosition.y, mPosition.z,
 			               mRotation.x, mRotation.y, mRotation.z);
 
-			MTXConcat(m, local_60, m);
+			MTXConcat(m, rotX, m);
 			gpMarioParticleManager->emitAndBindToPosPtr(0x13A, &mPosition, 1,
 			                                            this);
 		} else {

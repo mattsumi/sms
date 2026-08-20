@@ -2,9 +2,9 @@
 #include <System/MarDirector.hpp>
 #include <GC2D/GCConsole2.hpp>
 
-void TNpcBalloon::setNextMessage(u32 a, s32 timer)
+void TNpcBalloon::setNextMessage(u32 message, s32 timer)
 {
-	unk0                = a;
+	unk0                = message;
 	mBalloonAppearTimer = timer;
 }
 

@@ -37,14 +37,14 @@ u32 TMessageLoader::loadMessageData(const char* resource_name)
 	return unk2;
 }
 
-void TMessageLoader::readHeader(u32* a, u32* b, void* header)
+void TMessageLoader::readHeader(u32* out_size, u32* out_block_num, void* header)
 {
 	u32* casted = (u32*)header;
 	u32 size    = casted[2];
 	u32 count   = casted[3];
 
-	*a = size * 32;
-	*b = count;
+	*out_size      = size * 32;
+	*out_block_num = count;
 }
 
 void* TMessageLoader::parseBlock(u32 size, u32 block_num, void* data)

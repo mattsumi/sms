@@ -30,40 +30,39 @@ static void InitChangeTwoColor_Base(J3DModel* model, u16 mat_idx,
 	}
 }
 
-void SMS_InitChangeNpcColor(const MActor* param1,
-                            const TColorChangeInfo* param2, s16 param3,
-                            const GXColor* param4)
+void SMS_InitChangeNpcColor(const MActor* mactor, const TColorChangeInfo* info,
+                            s16 color_idx, const GXColor* kcolor)
 {
-	J3DModel* model         = param1->getModel();
+	J3DModel* model         = mactor->getModel();
 	J3DModelData* modelData = model->getModelData();
-	s32 matIdx = modelData->getMaterialName()->getIndex(param2->unk4);
-	switch (param2->unk0) {
+	s32 matIdx = modelData->getMaterialName()->getIndex(info->unk4);
+	switch (info->unk0) {
 	case 0:
-		if (param2->unk8 != nullptr) {
+		if (info->unk8 != nullptr) {
 			GXColor* matColor = new GXColor();
-			matColor->r       = param2->unk8[param3].r;
-			matColor->g       = param2->unk8[param3].g;
-			matColor->b       = param2->unk8[param3].b;
+			matColor->r       = info->unk8[color_idx].r;
+			matColor->g       = info->unk8[color_idx].g;
+			matColor->b       = info->unk8[color_idx].b;
 			matColor->a       = 0xff;
 			SMS_InitPacket_MatColor(model, matIdx, GX_COLOR0, matColor);
 		}
 		break;
 	case 1:
-		if (param2->unk8 != nullptr) {
+		if (info->unk8 != nullptr) {
 			InitChangeOneColor_Base(model, matIdx, GX_TEVREG0,
-			                        &param2->unk8[param3], param4);
+			                        &info->unk8[color_idx], kcolor);
 		}
 		break;
 	case 2:
-		if (param2->unk8 != nullptr && param2->unkC != nullptr) {
-			InitChangeTwoColor_Base(model, matIdx, &param2->unk8[param3],
-			                        &param2->unkC[param3], param4);
-		} else if (param2->unk8 != nullptr && param2->unkC == nullptr) {
+		if (info->unk8 != nullptr && info->unkC != nullptr) {
+			InitChangeTwoColor_Base(model, matIdx, &info->unk8[color_idx],
+			                        &info->unkC[color_idx], kcolor);
+		} else if (info->unk8 != nullptr && info->unkC == nullptr) {
 			InitChangeOneColor_Base(model, matIdx, GX_TEVREG1,
-			                        &param2->unk8[param3], param4);
-		} else if (param2->unk8 == nullptr && param2->unkC != nullptr) {
+			                        &info->unk8[color_idx], kcolor);
+		} else if (info->unk8 == nullptr && info->unkC != nullptr) {
 			InitChangeOneColor_Base(model, matIdx, GX_TEVREG2,
-			                        &param2->unkC[param3], param4);
+			                        &info->unkC[color_idx], kcolor);
 		}
 		break;
 	}
