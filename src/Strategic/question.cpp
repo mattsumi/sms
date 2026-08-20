@@ -38,7 +38,6 @@ bool TQuestionManager::request(JGeometry::TVec3<f32> pos, f32 size)
 	return false;
 }
 
-#pragma dont_inline on
 void TQuestionManager::makeDL(JDrama::TGraphics* graphics) const
 {
 	MtxPtr viewMtx = graphics->mViewMtx;
@@ -59,7 +58,6 @@ void TQuestionManager::makeDL(JDrama::TGraphics* graphics) const
 	}
 	unk20->setEnd();
 }
-#pragma dont_inline off
 
 void TQuestionManager::draw() const
 {

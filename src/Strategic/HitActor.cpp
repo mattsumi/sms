@@ -2,23 +2,17 @@
 #include <math.h>
 
 // Fabricated: rough sqrt without the Newton refinement step, in the style of
-// MsSqrtf (MathUtil.hpp). The double intermediates are required for the stack
-// frame to match. TSpineEnemy::calcTurnSpeedToReach (enemy.cpp) and
+// MsSqrtf (MathUtil.hpp). TSpineEnemy::calcTurnSpeedToReach (enemy.cpp) and
 // calcFarthestVertex (walker.cpp) inline the same computation, so this likely
-// lived in a shared header.
+// lived in a shared header. TODO: find that header; this spelling does not
+// reproduce the original's frame on its own.
 inline f32 MsFastSqrtf(f32 x)
 {
-	volatile float y;
 	double guess = __frsqrte((double)x);
 	double root  = x * guess;
-	y            = (float)root;
-	return y;
+	return (float)root;
 }
 
-// TODO: without the pragma, MWCC auto-inlines this function into initHitActor,
-// which the original binary does not do. The original spelling was presumably
-// heavy enough on its own to stay over the auto-inline threshold.
-#pragma dont_inline on
 void THitActor::calcEntryRadius()
 {
 	f32 rad;
@@ -41,7 +35,6 @@ void THitActor::calcEntryRadius()
 		mEntryRadius = 0.0f;
 	}
 }
-#pragma dont_inline off
 
 void THitActor::perform(u32 cue, JDrama::TGraphics* graphics)
 {

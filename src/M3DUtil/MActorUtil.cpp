@@ -17,12 +17,6 @@ MActor* SMS_MakeMActorFromSDLModelData(SDLModelData* model_data,
 {
 	SDLModel* model = new SDLModel(model_data, flags, 1);
 	MActor* actor   = new MActor(anm_data);
-	// fabricated: dead check shaped like a stripped assert. Its expression
-	// nodes raise this function's inline cost so MWCC keeps the call to it
-	// in SMS_MakeMActorWithAnmData and SMS_MakeMActors instead of inlining
-	// one level deeper than the original binary. TODO: find what the
-	// original statement really was.
-	(void)(actor != 0);
 	actor->setModel(model, 0);
 	return actor;
 }
@@ -41,11 +35,6 @@ MActor** SMS_MakeMActorsWithAnmData(const char* name, MActorAnmData* anm_data,
                                     int num, u32 flags, u32 load_flags)
 {
 	SDLModelData* sdlData = SMS_MakeSDLModelData(name, load_flags);
-	// fabricated: dead check shaped like a stripped assert. Its expression
-	// nodes raise this function's inline cost so MWCC keeps the call to it
-	// in SMS_MakeMActor instead of inlining one level deeper than the
-	// original binary. TODO: find what the original statement really was.
-	(void)(sdlData != 0);
 
 	MActor** actors = new MActor*[num];
 	for (int i = 0; i < num; ++i)

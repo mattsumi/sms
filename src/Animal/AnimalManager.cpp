@@ -64,9 +64,6 @@ void TMewManager::load(JSUMemoryInputStream& stream)
 void TMewManager::loadAfter()
 {
 	TAnimalManagerBase::loadAfter();
-	// TODO: fabricated - this unused local is required to match the stack
-	// frame size (0x28); TAnimalBase::loadAfter has the same extra 0x10
-	JGeometry::TVec3<f32> pos;
 	u16 num = getObjNum();
 	MSoundSESystem::MSRandPlay::createRandPlayVec(MSD_SE_OBJ_KAMOME_SOLO, num);
 }

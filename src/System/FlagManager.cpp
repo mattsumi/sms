@@ -339,7 +339,6 @@ bool TFlagManager::getBlueCoinFlag(u8 area, u8 blueCoin) const
 
 void TFlagManager::setBlueCoinFlag(u8 area, u8 blueCoin)
 {
-	u8 unused[8];
 	u8 stage = SMS_getShineStage(area);
 	if (stage == 0 || stage >= 10) {
 		stage = 1;
@@ -369,7 +368,6 @@ bool TFlagManager::getNozzleRight(u8 area, u8 nozzle) const
 
 void TFlagManager::setNozzleRight(u8 area, u8 nozzle)
 {
-	char unused[8];
 	unsigned char stage = SMS_getShineStage(area);
 	if (stage == 0 || stage >= 10) {
 		stage = 1;

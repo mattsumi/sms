@@ -18,9 +18,6 @@ TMessageLoader::TMessageLoader(const char* resource_name)
 		u32 count;
 		readHeader(&size, &count, res);
 		unk4 = parseBlock(size, count, res + 0x20);
-		// NOTE: assert but in an if?
-		if (unk4)
-			(void)unk4;
 	}
 }
 
